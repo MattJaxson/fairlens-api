@@ -75,13 +75,16 @@ async def check_usage_limit(
 
     tier_limit = TIER_LIMITS.get(user.tier, settings.FREE_TIER_LIMIT)
 
-    # Count usage this month
+    # Count usage this month across ALL of the user's API keys
     now = datetime.now(timezone.utc)
     month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
+    # Subquery: all key IDs belonging to this user
+    user_key_ids = select(APIKey.id).where(APIKey.user_id == key_record.user_id)
+
     result = await session.execute(
         select(func.count(UsageLog.id)).where(
-            UsageLog.api_key_id == key_record.id,
+            UsageLog.api_key_id.in_(user_key_ids),
             UsageLog.timestamp >= month_start,
         )
     )

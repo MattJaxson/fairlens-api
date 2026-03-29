@@ -177,9 +177,13 @@ async def get_usage(
     else:
         period_end = now.replace(month=now.month + 1, day=1, hour=0, minute=0, second=0, microsecond=0)
 
+    # Count usage across ALL of the user's API keys (not just the current one)
+    from app.models.database import APIKey as APIKeyModel
+    user_key_ids = select(APIKeyModel.id).where(APIKeyModel.user_id == key_record.user_id)
+
     result = await session.execute(
         select(func.count(UsageLog.id)).where(
-            UsageLog.api_key_id == key_record.id,
+            UsageLog.api_key_id.in_(user_key_ids),
             UsageLog.timestamp >= month_start,
         )
     )

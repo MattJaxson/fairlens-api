@@ -15,7 +15,7 @@ class TextAnalysisRequest(BaseModel):
 
 
 class DatasetAnalysisRequest(BaseModel):
-    data: list[dict] = Field(..., min_length=1, description="Dataset rows as list of dicts")
+    data: list[dict] = Field(..., min_length=1, max_length=10_000, description="Dataset rows as list of dicts")
     target_column: str = Field(..., description="Name of the outcome/target column")
     protected_columns: list[str] = Field(..., min_length=1, description="Protected attribute columns")
 
@@ -130,3 +130,40 @@ class UserResponse(BaseModel):
     email: str
     tier: str
     created_at: datetime
+
+
+# ── Racial Fairness Models (merged from adaptive-racial-fairness-framework) ──
+
+class RacialAuditRequest(BaseModel):
+    data: list[dict] = Field(..., min_length=1, max_length=10_000, description="Dataset rows")
+    race_col: str = Field(..., description="Sensitive attribute column")
+    outcome_col: str = Field(..., description="Outcome column")
+    favorable_value: str = Field(..., description="Value representing favorable outcome")
+    privileged_group: Optional[str] = Field(default=None, description="Reference group (default: White)")
+
+
+class ReweightRequest(BaseModel):
+    data: list[dict] = Field(..., min_length=1, max_length=10_000)
+    race_col: str
+    outcome_col: str
+    favorable_value: str
+
+
+class DebiasRequest(BaseModel):
+    data: list[dict] = Field(..., min_length=1, max_length=10_000)
+    race_col: str
+    outcome_col: str
+    favorable_value: str
+    feature_cols: list[str] = Field(..., min_length=1)
+    constraint: str = Field(default="demographic_parity")
+
+
+class CommunityConfigCreate(BaseModel):
+    priority_groups: list[str] = Field(..., min_length=1)
+    fairness_target: str
+    fairness_threshold: float = Field(default=0.8, gt=0, le=1)
+    input_protocol: str = Field(default="community_session")
+    input_location: str = Field(default="")
+    input_participants: int = Field(default=0, ge=0)
+    facilitator: str = Field(default="")
+    notes: str = Field(default="")

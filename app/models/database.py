@@ -66,9 +66,21 @@ class ReportStore(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     report_id = Column(String(64), unique=True, nullable=False, index=True)
-    report_type = Column(String(50), nullable=False)  # text, dataset
+    report_type = Column(String(50), nullable=False)  # text, dataset, racial_audit, reweight, remediation, debias, compliance
     report_json = Column(Text, nullable=False)
     api_key_id = Column(Integer, ForeignKey("api_keys.id"), nullable=False)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class CommunityConfig(Base):
+    """Per-user community fairness configurations with provenance."""
+    __tablename__ = "community_configs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    config_json = Column(Text, nullable=False)
+    record_id = Column(String(64), unique=True, nullable=False, index=True)
+    is_active = Column(Boolean, default=True)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 

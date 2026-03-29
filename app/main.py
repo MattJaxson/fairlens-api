@@ -12,7 +12,7 @@ from slowapi.util import get_remote_address
 
 from app.core.config import settings
 from app.models.database import init_db
-from app.api import analysis, billing, keys
+from app.api import analysis, billing, fairness, keys
 
 
 # ── Rate Limiter ────────────────────────────────────────────────────────────
@@ -24,7 +24,13 @@ limiter = Limiter(key_func=get_remote_address)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    """Initialize database tables on startup."""
+    """Initialize database tables on startup; validate critical config."""
+    # ── Security gate: refuse to start with default secret ──
+    if settings.SECRET_KEY == "change-me-in-production":
+        raise RuntimeError(
+            "FATAL: SECRET_KEY is still the default placeholder. "
+            "Set a real SECRET_KEY env variable before starting the server."
+        )
     await init_db()
     yield
 
@@ -83,4 +89,5 @@ async def root() -> dict:
 
 app.include_router(analysis.router)
 app.include_router(billing.router)
+app.include_router(fairness.router)
 app.include_router(keys.router)
