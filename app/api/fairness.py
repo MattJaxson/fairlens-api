@@ -434,6 +434,72 @@ async def audit_compliance(
     })
 
 
+@router.post("/audit/compliance/{regulation}")
+async def audit_compliance_regulation(
+    regulation: str,
+    file: UploadFile = File(...),
+    race_col: str = Form(...),
+    outcome_col: str = Form(...),
+    favorable_value: str = Form(...),
+    config_json: str = Form(default=None, description="Optional CDF v1.0 community config as JSON string"),
+    privileged_group: str = Form(default=None, description="Reference group (default: auto-detect)"),
+    key_record: APIKey = Depends(check_usage_limit),
+    session: AsyncSession = Depends(get_session),
+) -> JSONResponse:
+    """
+    Generate a regulation-specific compliance report. Enterprise tier.
+
+    Supported regulations:
+    - `ll144` — NYC Local Law 144 (Automated Employment Decision Tools)
+    - `michigan_hb4668` — Michigan HB 4668 (Algorithmic Discrimination)
+    - `colorado_ai_act` — Colorado AI Act SB 24-205 (High-Risk AI Systems)
+    """
+    from app.services.compliance_adapter import (
+        generate_ll144_report,
+        generate_michigan_hb4668_report,
+        generate_colorado_ai_act_report,
+    )
+
+    GENERATORS = {
+        "ll144": generate_ll144_report,
+        "michigan_hb4668": generate_michigan_hb4668_report,
+        "colorado_ai_act": generate_colorado_ai_act_report,
+    }
+
+    if regulation not in GENERATORS:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported regulation: '{regulation}'. Options: {list(GENERATORS.keys())}",
+        )
+
+    user = await session.get(User, key_record.user_id)
+    _require_tier(user, "enterprise")
+
+    community_config = None
+    if config_json:
+        try:
+            community_config = json.loads(config_json)
+        except json.JSONDecodeError as e:
+            raise HTTPException(status_code=400, detail=f"Invalid config_json: {e}")
+
+    try:
+        df = await _read_csv(file)
+        df, favorable = coerce_favorable(df, outcome_col, favorable_value)
+        priv = privileged_group or None
+        audit_report = auditor.build_audit_report(
+            df=df, race_col=race_col, outcome_col=outcome_col,
+            favorable_value=favorable, privileged_group=priv,
+            community_defs=community_config,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+    report = GENERATORS[regulation](audit_report, community_config)
+
+    await log_usage(session, key_record.id, f"/api/v1/fairness/audit/compliance/{regulation}", len(df))
+    return JSONResponse(content=report)
+
+
 # ── Reweight ──────────────────────────────────────────────────────────────
 
 
