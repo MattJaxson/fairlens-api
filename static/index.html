@@ -278,18 +278,26 @@
             width: 32px;
             height: 32px;
             border: 2px solid var(--black);
-            background: var(--gray-light);
+            background: var(--white);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 11px;
+            font-weight: 500;
             margin-bottom: 10px;
             box-shadow: 1px 1px 0 #000;
+            font-family: 'DM Mono', monospace;
+        }
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
         }
         .feature-cell h3 {
             font-size: 13px;
             font-weight: 500;
-            margin-bottom: 4px;
+            margin-bottom: 0;
         }
         .feature-cell p {
             font-size: 12px;
@@ -366,14 +374,14 @@
             flex-shrink: 0;
         }
         .cdf-icon-large {
-            width: 72px;
-            height: 72px;
+            width: 64px;
+            height: 64px;
             border: 2px solid var(--black);
-            background: var(--gray-light);
+            background: var(--white);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 28px;
             box-shadow: var(--shadow);
         }
         .cdf-text h2 {
@@ -499,7 +507,7 @@
 
 <!-- ═══ Menu Bar ═══ -->
 <div class="menu-bar">
-    <span class="apple-logo">&#63743;</span>
+    <span class="apple-logo">&#9878;</span>
     <div class="menu-item">
         <strong>FairLens</strong>
         <div class="dropdown">
@@ -565,9 +573,6 @@
         </div>
         <div class="window-body">
             <div class="cdf-content">
-                <div class="cdf-icon-col">
-                    <div class="cdf-icon-large">&#9881;</div>
-                </div>
                 <div class="cdf-text">
                     <h2>Who decides what &ldquo;fair&rdquo; means?</h2>
                     <p>
@@ -641,33 +646,27 @@
         <div class="window-body" style="padding: 0;">
             <div class="feature-grid">
                 <div class="feature-cell">
-                    <div class="feature-icon-sm">&#9998;</div>
-                    <h3>Text Bias Detection</h3>
+                    <div class="feature-header"><div class="feature-icon-sm">Aa</div><h3>Text Bias Detection</h3></div>
                     <p>181 patterns across gender, race, age, disability. Actionable suggestions for every flag.</p>
                 </div>
                 <div class="feature-cell">
-                    <div class="feature-icon-sm">&#9636;</div>
-                    <h3>Racial Fairness Audit</h3>
+                    <div class="feature-header"><div class="feature-icon-sm">DI</div><h3>Racial Fairness Audit</h3></div>
                     <p>Disparate impact, statistical parity, racial disparity scoring with community thresholds.</p>
                 </div>
                 <div class="feature-cell">
-                    <div class="feature-icon-sm">&#9878;</div>
-                    <h3>Community Governance</h3>
+                    <div class="feature-header"><div class="feature-icon-sm">&#9878;</div><h3>Community Governance</h3></div>
                     <p>CDF v1.0 provenance tracking. Communities set and own their fairness standard.</p>
                 </div>
                 <div class="feature-cell">
-                    <div class="feature-icon-sm">&#9881;</div>
-                    <h3>Adversarial Debiasing</h3>
+                    <div class="feature-header"><div class="feature-icon-sm">ML</div><h3>Adversarial Debiasing</h3></div>
                     <p>Fairlearn ExponentiatedGradient. Before/after comparison with per-group DI.</p>
                 </div>
                 <div class="feature-cell">
-                    <div class="feature-icon-sm">&#9745;</div>
-                    <h3>Compliance Reports</h3>
+                    <div class="feature-header"><div class="feature-icon-sm">LL</div><h3>Compliance Reports</h3></div>
                     <p>LL144, Michigan HB 4668, Colorado AI Act. Regulation-specific PDF output.</p>
                 </div>
                 <div class="feature-cell">
-                    <div class="feature-icon-sm">&#9889;</div>
-                    <h3>Sub-100ms Latency</h3>
+                    <div class="feature-header"><div class="feature-icon-sm">&lt;1s</div><h3>Sub-100ms Latency</h3></div>
                     <p>Deterministic scoring. No LLM in the hot path. Consistent, fast, every time.</p>
                 </div>
             </div>
