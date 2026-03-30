@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — FairLens API</title>
+    <meta name="description" content="FairLens API live stats — analyses run, active users, community fairness standards created.">
+    <link rel="stylesheet" href="/static/css/system7.css">
+</head>
+<body>
+
+<!-- ═══ Menu Bar ═══ -->
+<div class="menu-bar">
+    <span class="apple-logo">&#9878;</span>
+    <div class="menu-item">
+        <strong>FairLens</strong>
+        <div class="dropdown">
+            <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="/dashboard">Dashboard <span class="shortcut">&#8984;B</span></a>
+        </div>
+    </div>
+    <div class="menu-item">
+        API
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/demo">Live Demo <span class="shortcut">&#8984;T</span></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/register">Get API Key</a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+        </div>
+    </div>
+    <div class="menu-item">
+        Compliance
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Colorado AI Act</a>
+        </div>
+    </div>
+</div>
+
+<div class="desktop">
+
+    <!-- ═══ Stats Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">FairLens Dashboard &mdash; Live Stats</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="padding: 0;">
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;">
+                <div style="border-right: 1px solid var(--gray); padding: 24px; text-align: center;">
+                    <div class="sprite-chart" style="margin: 0 auto 12px; justify-content: center;">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                    <div id="dash-analyses" style="font-size: 36px; font-weight: 500; font-family: 'DM Mono', monospace;">—</div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-top: 4px;">Analyses Run</div>
+                </div>
+                <div style="border-right: 1px solid var(--gray); padding: 24px; text-align: center;">
+                    <div class="sprite-people" style="margin: 0 auto 12px;">
+                        <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                        <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                        <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                    </div>
+                    <div id="dash-users" style="font-size: 36px; font-weight: 500; font-family: 'DM Mono', monospace;">—</div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-top: 4px;">Registered Users</div>
+                </div>
+                <div style="border-right: 1px solid var(--gray); padding: 24px; text-align: center;">
+                    <div style="margin-bottom: 12px;">
+                        <div class="sprite-scales" style="margin: 0 auto;">
+                            <div class="beam"></div>
+                            <div class="pillar"></div>
+                            <div class="pan-l"></div>
+                            <div class="pan-r"></div>
+                            <div class="base"></div>
+                        </div>
+                    </div>
+                    <div id="dash-communities" style="font-size: 36px; font-weight: 500; font-family: 'DM Mono', monospace;">—</div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-top: 4px;">Community Standards</div>
+                </div>
+                <div style="padding: 24px; text-align: center;">
+                    <div style="margin-bottom: 12px;">
+                        <div class="sprite-shield" style="margin: 0 auto;">
+                            <div class="shield-body"></div>
+                            <div class="shield-check"></div>
+                        </div>
+                    </div>
+                    <div id="dash-pageviews" style="font-size: 36px; font-weight: 500; font-family: 'DM Mono', monospace;">—</div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-top: 4px;">Page Views</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ System Health Window ═══ -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">System Health</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">API STATUS</div>
+                    <div id="health-status" style="display: flex; align-items: center; gap: 8px;">
+                        <div id="health-dot" style="width: 12px; height: 12px; border: 2px solid var(--black); background: var(--gray);"></div>
+                        <span id="health-text" style="font-size: 13px;">Checking&hellip;</span>
+                    </div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">VERSION</div>
+                    <div id="health-version" style="font-family: 'DM Mono', monospace; font-size: 13px;">—</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">LATENCY</div>
+                    <div id="health-latency" style="font-family: 'DM Mono', monospace; font-size: 13px;">—</div>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">UPTIME</div>
+                    <div style="font-family: 'DM Mono', monospace; font-size: 13px;">
+                        <span id="health-uptime">checking</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ API Capabilities Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Capabilities</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="padding: 0;">
+            <div class="feature-grid">
+                <div class="feature-cell" style="text-align: center;">
+                    <div style="font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace;">181</div>
+                    <div style="font-size: 12px; color: var(--gray-darker);">Bias Patterns</div>
+                </div>
+                <div class="feature-cell" style="text-align: center;">
+                    <div style="font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace;">4</div>
+                    <div style="font-size: 12px; color: var(--gray-darker);">Bias Categories</div>
+                </div>
+                <div class="feature-cell" style="text-align: center;">
+                    <div style="font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace;">3</div>
+                    <div style="font-size: 12px; color: var(--gray-darker);">Compliance Regs</div>
+                </div>
+                <div class="feature-cell" style="text-align: center;">
+                    <div style="font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace;">19</div>
+                    <div style="font-size: 12px; color: var(--gray-darker);">API Endpoints</div>
+                </div>
+                <div class="feature-cell" style="text-align: center;">
+                    <div style="font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace;">&lt;100</div>
+                    <div style="font-size: 12px; color: var(--gray-darker);">ms Latency</div>
+                </div>
+                <div class="feature-cell" style="text-align: center;">
+                    <div style="font-size: 28px; font-weight: 500; font-family: 'DM Mono', monospace;">24mo</div>
+                    <div style="font-size: 12px; color: var(--gray-darker);">CDF Staleness Window</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ CTA ═══ -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Get Started</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="text-align: center; padding: 24px;">
+            <p style="font-size: 13px; color: var(--gray-darker); margin-bottom: 16px; line-height: 1.6;">
+                FairLens is the first AI fairness API where communities set the standard.
+                Built in Detroit. Open for business.
+            </p>
+            <div class="btn-row">
+                <a href="/demo" class="mac-btn mac-btn-primary">Try Live Demo</a>
+                <a href="/register" class="mac-btn">Get API Key</a>
+                <a href="/api-docs" class="mac-btn">Read Docs</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer-bar">
+    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    <div class="footer-links">
+        <a href="/api-docs">Docs</a>
+        <a href="/demo">Demo</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
+        <a href="/api/v1/health">Status</a>
+    </div>
+</div>
+
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/api.js"></script>
+<script>
+// Fetch and display stats
+async function loadDashboard() {
+    // Public stats
+    const stats = await fetchPublicStats();
+    if (stats) {
+        animateCounter('dash-analyses', stats.total_analyses);
+        animateCounter('dash-users', stats.total_users);
+        animateCounter('dash-communities', stats.total_communities);
+        animateCounter('dash-pageviews', stats.total_pageviews);
+    }
+
+    // Health check with latency measurement
+    const start = performance.now();
+    try {
+        const res = await fetch(window.location.origin + '/health');
+        const latency = Math.round(performance.now() - start);
+        const data = await res.json();
+
+        document.getElementById('health-dot').style.background = '#000';
+        document.getElementById('health-text').textContent = 'Operational';
+        document.getElementById('health-version').textContent = data.version || 'v1';
+        document.getElementById('health-latency').textContent = latency + 'ms';
+        document.getElementById('health-uptime').textContent = 'Online';
+    } catch {
+        document.getElementById('health-text').textContent = 'Unreachable';
+        document.getElementById('health-latency').textContent = '—';
+    }
+}
+
+function animateCounter(id, target) {
+    const el = document.getElementById(id);
+    if (target === 0) { el.textContent = '0'; return; }
+
+    let current = 0;
+    const step = Math.max(1, Math.floor(target / 30));
+    const interval = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            current = target;
+            clearInterval(interval);
+        }
+        el.textContent = current.toLocaleString();
+    }, 30);
+}
+
+loadDashboard();
+// Auto-refresh every 30 seconds
+setInterval(loadDashboard, 30000);
+</script>
+
+</body>
+</html>

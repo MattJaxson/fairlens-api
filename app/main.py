@@ -8,13 +8,14 @@ from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from app.core.config import settings
 from app.models.database import init_db
-from app.api import analysis, billing, fairness, keys
+from app.api import analysis, billing, fairness, keys, tracking
 
 
 # ── Rate Limiter ────────────────────────────────────────────────────────────
@@ -96,3 +97,40 @@ app.include_router(analysis.router)
 app.include_router(billing.router)
 app.include_router(fairness.router)
 app.include_router(keys.router)
+app.include_router(tracking.router)
+
+
+# ── Static Pages ───────────────────────────────────────────────────────────
+
+STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
+app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+
+@app.get("/demo", include_in_schema=False)
+async def demo_page():
+    """Serve the live demo page."""
+    return FileResponse(STATIC_DIR / "demo.html", media_type="text/html")
+
+
+@app.get("/register", include_in_schema=False)
+async def register_page():
+    """Serve the registration page."""
+    return FileResponse(STATIC_DIR / "register.html", media_type="text/html")
+
+
+@app.get("/dashboard", include_in_schema=False)
+async def dashboard_page():
+    """Serve the public stats dashboard."""
+    return FileResponse(STATIC_DIR / "dashboard.html", media_type="text/html")
+
+
+@app.get("/api-docs", include_in_schema=False)
+async def docs_custom_page():
+    """Serve the styled API documentation page."""
+    return FileResponse(STATIC_DIR / "docs-custom.html", media_type="text/html")
+
+
+@app.get("/community", include_in_schema=False)
+async def community_page():
+    """Serve the community/CDF story page."""
+    return FileResponse(STATIC_DIR / "community.html", media_type="text/html")

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation — FairLens API</title>
+    <meta name="description" content="FairLens API documentation — bias detection, fairness auditing, community governance, compliance reports, and billing endpoints.">
+    <link rel="stylesheet" href="/static/css/system7.css">
+</head>
+<body>
+
+<!-- ═══ Menu Bar ═══ -->
+<div class="menu-bar">
+    <span class="apple-logo">&#9878;</span>
+    <div class="menu-item">
+        <strong>FairLens</strong>
+        <div class="dropdown">
+            <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="/dashboard">Dashboard <span class="shortcut">&#8984;B</span></a>
+        </div>
+    </div>
+    <div class="menu-item">
+        API
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/demo">Live Demo <span class="shortcut">&#8984;T</span></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/register">Get API Key</a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+        </div>
+    </div>
+    <div class="menu-item">
+        Compliance
+        <div class="dropdown">
+            <a class="dropdown-item" href="#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="#compliance">Colorado AI Act</a>
+        </div>
+    </div>
+</div>
+
+<div class="desktop">
+
+    <!-- ═══ Overview Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">API Documentation</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="display: flex; align-items: flex-start; gap: 16px;">
+                <div>
+                    <h2 style="font-size: 17px; font-weight: 500; margin-bottom: 8px;">FairLens API v1<span class="sprite-cursor" style="margin-left: 4px;"></span></h2>
+                    <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6; margin-bottom: 12px;">
+                        Base URL: <code style="font-family: 'DM Mono', monospace; background: var(--gray-light); padding: 2px 6px; border: 1px solid var(--gray);">https://modest-serenity-production-b7b9.up.railway.app</code>
+                    </p>
+                    <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6; margin-bottom: 12px;">
+                        Authentication: pass your API key in the <code style="font-family: 'DM Mono', monospace; background: var(--gray-light); padding: 2px 6px; border: 1px solid var(--gray);">X-API-Key</code> header.
+                    </p>
+                    <div class="btn-row" style="justify-content: flex-start;">
+                        <a href="/register" class="mac-btn mac-btn-primary">Get API Key</a>
+                        <a href="/docs" class="mac-btn">OpenAPI / Swagger</a>
+                        <a href="/demo" class="mac-btn">Try Live Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Analysis Endpoints ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Analysis Endpoints &mdash; /api/v1/analyze</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/analyze/text</span>
+                <span class="endpoint-tier">All Tiers</span>
+                <div class="endpoint-desc">
+                    Analyze text for bias across gender, race, age, and disability categories.
+                    Returns per-category scores (0-100), flagged phrases with suggestions, and overall fairness score.
+                </div>
+                <details style="margin-top: 8px;">
+                    <summary style="font-size: 11px; cursor: pointer; color: var(--gray-dark);">Example Request &amp; Response</summary>
+                    <div class="code-body" style="margin-top: 8px; font-size: 11px; border: 1px solid var(--gray);">
+{
+  "text": "We need a young, aggressive salesman...",
+  "categories": ["gender", "race", "age", "disability"]
+}
+
+<span class="cm">// Response</span>
+{
+  "report_id": "abc-123",
+  "overall_score": 34.2,
+  "bias_scores": [
+    {"category": "gender", "score": 28.5, "flagged_phrases": [...]},
+    {"category": "age", "score": 40.0, "flagged_phrases": [...]}
+  ],
+  "recommendations": ["Replace 'salesman' with 'salesperson'"]
+}</div>
+                </details>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/analyze/dataset</span>
+                <span class="endpoint-tier">All Tiers</span>
+                <div class="endpoint-desc">
+                    Analyze a dataset for fairness metrics: disparate impact ratio, statistical parity difference,
+                    equal opportunity difference. Pass data as a list of JSON objects.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/api/v1/analyze/report/{report_id}</span>
+                <span class="endpoint-tier">All Tiers</span>
+                <div class="endpoint-desc">Retrieve a previously generated analysis report by ID.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Fairness Endpoints ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Fairness Endpoints &mdash; /api/v1/fairness</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit</span>
+                <span class="endpoint-tier">All Tiers</span>
+                <div class="endpoint-desc">
+                    Racial fairness audit on JSON data. Returns disparate impact ratios per group,
+                    findings, and recommendations against EEOC 4/5ths rule or community-defined threshold.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit/csv</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Upload a CSV file for racial fairness audit.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit/pdf</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Audit CSV data and return a formatted PDF compliance report.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit/remediate</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Full remediation loop: audit &rarr; reweight &rarr; post-audit comparison.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit/debias</span>
+                <span class="endpoint-tier">Enterprise</span>
+                <div class="endpoint-desc">Adversarial ML debiasing via Fairlearn ExponentiatedGradient with DemographicParity constraint.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/reweight</span>
+                <span class="endpoint-tier">All Tiers</span>
+                <div class="endpoint-desc">Fairness-aware sample reweighting. Returns original and reweighted outcome rates per group.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/reweight/csv</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Upload a CSV file for fairness-aware reweighting.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Compliance Endpoints ═══ -->
+    <div class="window window-wide" id="compliance">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Compliance Endpoints</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+                <span class="compliance-badge">NYC LL144</span>
+                <span class="compliance-badge">Michigan HB 4668</span>
+                <span class="compliance-badge">Colorado AI Act</span>
+                <span class="compliance-badge">EEOC 4/5ths</span>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit/compliance</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Check dataset compliance against a community-defined fairness standard (CDF v1.0).</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/audit/compliance/{regulation}</span>
+                <span class="endpoint-tier">Enterprise</span>
+                <div class="endpoint-desc">
+                    Generate a regulation-specific compliance report. Supported regulations:
+                    <code style="font-family: 'DM Mono', monospace; font-size: 11px;">ll144</code>,
+                    <code style="font-family: 'DM Mono', monospace; font-size: 11px;">michigan_hb4668</code>,
+                    <code style="font-family: 'DM Mono', monospace; font-size: 11px;">colorado_ai_act</code>
+                </div>
+                <details style="margin-top: 8px;">
+                    <summary style="font-size: 11px; cursor: pointer; color: var(--gray-dark);">Example Request</summary>
+                    <div class="code-body" style="margin-top: 8px; font-size: 11px; border: 1px solid var(--gray);">
+curl -X POST /api/v1/fairness/audit/compliance/ll144 \
+  -H "X-API-Key: fl_live_your_key" \
+  -F "file=@hiring_data.csv" \
+  -F "race_col=race" \
+  -F "outcome_col=hired" \
+  -F "favorable_value=yes" \
+  -F "config_json={}"</div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Community Governance Endpoints ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Community Governance &mdash; CDF v1.0</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/community/config</span>
+                <span class="endpoint-tier">Enterprise</span>
+                <div class="endpoint-desc">
+                    Create a community fairness config with full provenance: priority groups,
+                    threshold, input protocol, participants, facilitator, location, date.
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/api/v1/fairness/community/config</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Retrieve the current active community fairness config for your account.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/community/config/validate</span>
+                <span class="endpoint-tier">All Tiers</span>
+                <div class="endpoint-desc">Validate a community config for completeness, staleness, and participant thresholds.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Keys & Billing ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Keys &amp; Billing</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 12px;">API KEY MANAGEMENT</div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/keys/register</span>
+                <span class="endpoint-tier">Public</span>
+                <div class="endpoint-desc">Register a new user and generate your first API key. No auth required.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/keys</span>
+                <span class="endpoint-tier">Authenticated</span>
+                <div class="endpoint-desc">Create additional API keys for your account (max 10 per user).</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/api/v1/keys</span>
+                <span class="endpoint-tier">Authenticated</span>
+                <div class="endpoint-desc">List all API keys for your account.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method delete">DELETE</span>
+                <span class="endpoint-path">/api/v1/keys/{key_id}</span>
+                <span class="endpoint-tier">Authenticated</span>
+                <div class="endpoint-desc">Revoke an API key. Cannot revoke your last active key.</div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--gray-dark); margin: 16px 0 12px;">BILLING</div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/billing/create-checkout</span>
+                <span class="endpoint-tier">Authenticated</span>
+                <div class="endpoint-desc">Create a Stripe Checkout session to upgrade to Pro or Enterprise.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/api/v1/billing/usage</span>
+                <span class="endpoint-tier">Authenticated</span>
+                <div class="endpoint-desc">Get your current monthly usage stats: tier, limit, used, remaining.</div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/api/v1/billing/portal</span>
+                <span class="endpoint-tier">Authenticated</span>
+                <div class="endpoint-desc">Generate a Stripe Customer Portal link for subscription management.</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer-bar">
+    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    <div class="footer-links">
+        <a href="/api-docs">Docs</a>
+        <a href="/demo">Demo</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
+        <a href="/api/v1/health">Status</a>
+    </div>
+</div>
+
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/api.js"></script>
+
+</body>
+</html>

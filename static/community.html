@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community-Defined Fairness — FairLens API</title>
+    <meta name="description" content="CDF v1.0 — the first framework where communities set their own AI fairness standards. Built in Detroit. Piloting in District 3.">
+    <link rel="stylesheet" href="/static/css/system7.css">
+</head>
+<body>
+
+<!-- ═══ Menu Bar ═══ -->
+<div class="menu-bar">
+    <span class="apple-logo">&#9878;</span>
+    <div class="menu-item">
+        <strong>FairLens</strong>
+        <div class="dropdown">
+            <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="/dashboard">Dashboard <span class="shortcut">&#8984;B</span></a>
+        </div>
+    </div>
+    <div class="menu-item">
+        API
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/demo">Live Demo <span class="shortcut">&#8984;T</span></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/register">Get API Key</a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+        </div>
+    </div>
+    <div class="menu-item">
+        Compliance
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Colorado AI Act</a>
+        </div>
+    </div>
+</div>
+
+<div class="desktop">
+
+    <!-- ═══ Hero Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Community-Defined Fairness (CDF v1.0)</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="text-align: center; padding: 32px 24px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+                <div class="sprite-people" style="width: 160px;">
+                    <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                    <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                    <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                    <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                    <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
+                </div>
+            </div>
+            <h1 style="font-size: 24px; font-weight: 500; margin-bottom: 12px; line-height: 1.2;">
+                Who decides what &ldquo;fair&rdquo; means?
+            </h1>
+            <p style="font-size: 13px; color: var(--gray-darker); max-width: 520px; margin: 0 auto; line-height: 1.7;">
+                Every AI system uses a fairness threshold &mdash; a number that determines when the system
+                is &ldquo;fair enough.&rdquo; Today, that number comes from a federal regulation written in 1978,
+                a tech vendor&rsquo;s lawyers, or nobody at all. <strong>No one asks the community.</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- ═══ Timeline Window ═══ -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">How We Got Here</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">1978</div>
+                    <div class="timeline-desc">
+                        <strong>EEOC Uniform Guidelines</strong> establish the &ldquo;four-fifths rule&rdquo; &mdash;
+                        if a selection rate for a protected group is less than 80% of the highest group,
+                        it constitutes adverse impact. This becomes the default fairness threshold for decades.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2018</div>
+                    <div class="timeline-desc">
+                        <strong>AI fairness research explodes.</strong> Researchers propose dozens of mathematical
+                        fairness definitions. None of them ask the affected community what &ldquo;fair&rdquo; means to them.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2021&ndash;2024</div>
+                    <div class="timeline-desc">
+                        <strong>Regulation wave:</strong> NYC Local Law 144 mandates bias audits for hiring AI.
+                        Colorado passes the AI Act. Michigan proposes HB 4668. All use vendor-selected
+                        thresholds &mdash; the community still has no formal voice.
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot active"></div>
+                    <div class="timeline-year">2026</div>
+                    <div class="timeline-desc">
+                        <strong>CDF v1.0.</strong> Community-Defined Fairness. For the first time, the people
+                        an AI system affects set the fairness standard themselves &mdash; documented, signed,
+                        with full provenance.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ How It Works Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">How a Community Session Works</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="padding: 0;">
+            <div class="session-steps">
+                <div class="session-step">
+                    <div class="step-number">1</div>
+                    <h4>Share Experiences</h4>
+                    <p>Residents share their encounters with automated systems. 10 minutes.</p>
+                </div>
+                <div class="session-step">
+                    <div class="step-number">2</div>
+                    <h4>Evaluate Scenarios</h4>
+                    <p>Walk through 4 real-number scenarios showing what &ldquo;legal&rdquo; vs &ldquo;fair&rdquo; looks like. 40 min.</p>
+                </div>
+                <div class="session-step">
+                    <div class="step-number">3</div>
+                    <h4>Set the Standard</h4>
+                    <p>Residents vote on a fairness threshold &mdash; the minimum acceptable performance. 20 min.</p>
+                </div>
+                <div class="session-step">
+                    <div class="step-number">4</div>
+                    <h4>Sign &amp; Document</h4>
+                    <p>The standard is documented with full provenance and signed by participants. 20 min.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ What CDF Tracks Window ═══ -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">What CDF v1.0 Records</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">THE STANDARD</div>
+                    <ul class="cdf-list">
+                        <li>Fairness threshold (e.g., 0.90 instead of EEOC 0.80)</li>
+                        <li>Priority groups identified by the community</li>
+                        <li>Definition of &ldquo;favorable outcome&rdquo;</li>
+                        <li>Acceptable metric (DI ratio, statistical parity, etc.)</li>
+                    </ul>
+                </div>
+                <div>
+                    <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">THE PROVENANCE</div>
+                    <ul class="cdf-list">
+                        <li>Who participated (count, not names)</li>
+                        <li>When the session was held</li>
+                        <li>Input protocol (session, survey, interview)</li>
+                        <li>Facilitator</li>
+                        <li>Location</li>
+                        <li>Expiry date (24-month staleness window)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ District 3 Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">First Pilot &mdash; District 3, Detroit</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="display: flex; gap: 24px; align-items: flex-start;">
+                <div style="flex-shrink: 0;">
+                    <div class="sprite-scales" style="margin: 0 auto;">
+                        <div class="beam"></div>
+                        <div class="pillar"></div>
+                        <div class="pan-l"></div>
+                        <div class="pan-r"></div>
+                        <div class="base"></div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="font-size: 15px; font-weight: 500; margin-bottom: 8px;">
+                        The first community in America to formally govern a municipal AI system
+                    </h3>
+                    <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6; margin-bottom: 12px;">
+                        Detroit&rsquo;s District 3 operates &ldquo;Emily,&rdquo; an AI voice agent that handles resident
+                        service calls. Emily processes calls from a majority-Black district &mdash; and AI speech
+                        recognition has documented failure rates with Black American English.
+                    </p>
+                    <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6; margin-bottom: 12px;">
+                        CDF v1.0&rsquo;s first pilot puts 10&ndash;15 District 3 residents in a room to set the fairness
+                        standard for Emily. Not the vendor&rsquo;s lawyers. Not a federal regulation from 1978.
+                        The people Emily actually serves.
+                    </p>
+                    <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6;">
+                        The result: a signed <strong>District 3 Community Fairness Standard</strong> &mdash; one page,
+                        full provenance, presentable at city council, and enforceable against the vendor.
+                        Six-month review built in.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Why This Matters Window ═══ -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Why This Matters</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="font-size: 13px; color: var(--gray-darker); line-height: 1.7;">
+                <p style="margin-bottom: 12px;">
+                    <strong>The UMich survey found</strong> Detroiters are skeptical about AI fairness.
+                    CDF addresses that skepticism with action, not promises.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    <strong>Regulation is necessary but insufficient.</strong> NYC LL144 requires audits but
+                    lets vendors pick the threshold. Colorado requires impact assessments but doesn&rsquo;t
+                    specify who defines &ldquo;acceptable.&rdquo; CDF fills the gap between compliance and accountability.
+                </p>
+                <p>
+                    <strong>Fairness is not a number you look up.</strong> It&rsquo;s a conversation you have with
+                    the people affected. CDF v1.0 is the infrastructure for that conversation &mdash; documented,
+                    tracked, and built to last.
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray);">
+                <div class="btn-row">
+                    <a href="/demo" class="mac-btn mac-btn-primary">Try the API</a>
+                    <a href="/register" class="mac-btn">Get Started</a>
+                    <a href="/api-docs#compliance" class="mac-btn">Compliance Docs</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer-bar">
+    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    <div class="footer-links">
+        <a href="/api-docs">Docs</a>
+        <a href="/demo">Demo</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
+        <a href="/api/v1/health">Status</a>
+    </div>
+</div>
+
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/api.js"></script>
+
+</body>
+</html>

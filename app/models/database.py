@@ -84,6 +84,17 @@ class CommunityConfig(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
+class PageView(Base):
+    """Anonymous page view tracking."""
+    __tablename__ = "page_views"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    path = Column(String(255), nullable=False)
+    referrer = Column(String(512), nullable=True)
+    session_hash = Column(String(64), nullable=False, index=True)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
 # ── Engine & Session ────────────────────────────────────────────────────────
 
 engine = create_async_engine(settings.DATABASE_URL, echo=settings.DEBUG)

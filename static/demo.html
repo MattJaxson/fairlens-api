@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Demo — FairLens API</title>
+    <meta name="description" content="Try FairLens bias detection live. Type or paste text and see real-time bias analysis — no API key required.">
+    <link rel="stylesheet" href="/static/css/system7.css">
+</head>
+<body>
+
+<!-- ═══ Menu Bar ═══ -->
+<div class="menu-bar">
+    <span class="apple-logo">&#9878;</span>
+    <div class="menu-item">
+        <strong>FairLens</strong>
+        <div class="dropdown">
+            <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="/dashboard">Dashboard <span class="shortcut">&#8984;B</span></a>
+        </div>
+    </div>
+    <div class="menu-item">
+        API
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/demo">Live Demo <span class="shortcut">&#8984;T</span></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/register">Get API Key</a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+        </div>
+    </div>
+    <div class="menu-item">
+        Compliance
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Colorado AI Act</a>
+        </div>
+    </div>
+</div>
+
+<div class="desktop">
+
+    <!-- ═══ Demo Input Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Live Bias Detection &mdash; Try It Now</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div class="sprite-magnify">
+                    <div class="lens"></div>
+                    <div class="lens-glare"></div>
+                    <div class="handle"></div>
+                </div>
+                <div>
+                    <p style="font-size: 13px; margin-bottom: 4px;">
+                        <strong>Paste any text</strong> &mdash; job posting, policy document, marketing copy &mdash; and
+                        FairLens will scan it for biased language across 4 categories.
+                    </p>
+                    <p style="font-size: 11px; color: var(--gray-dark);">
+                        500 character limit &bull; 5 analyses per minute &bull; No API key required
+                    </p>
+                </div>
+            </div>
+
+            <textarea id="demo-input" class="mac-textarea" placeholder="Type or paste text here...&#10;&#10;Try: &quot;We need a young, aggressive salesman who can man the front desk and handle the elderly customers.&quot;" rows="5"></textarea>
+
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px;">
+                <button id="demo-btn" class="mac-btn mac-btn-primary" onclick="runDemo()">Analyze for Bias</button>
+                <span id="demo-status" style="font-size: 12px; color: var(--gray-dark);"></span>
+                <span id="demo-chars" style="font-size: 11px; color: var(--gray-dark); margin-left: auto;">0 / 500</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Loading State ═══ -->
+    <div id="demo-loading" class="window window-wide" style="display: none;">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Analyzing&hellip;</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="text-align: center; padding: 32px;">
+            <div class="sprite-magnify" style="margin: 0 auto 16px; animation-duration: 0.8s;">
+                <div class="lens"></div>
+                <div class="lens-glare"></div>
+                <div class="handle"></div>
+            </div>
+            <div class="mac-progress" style="max-width: 300px; margin: 0 auto;">
+                <div class="mac-progress-fill" style="width: 100%;"></div>
+            </div>
+            <p style="margin-top: 12px; font-size: 12px; color: var(--gray-dark);">Scanning 181 bias patterns&hellip;</p>
+        </div>
+    </div>
+
+    <!-- ═══ Results Window ═══ -->
+    <div id="demo-results" class="window window-wide" style="display: none;">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Analysis Results</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <!-- Overall Score -->
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 4px;">OVERALL FAIRNESS SCORE</div>
+                <div id="result-score" style="font-size: 48px; font-weight: 500; font-family: 'DM Mono', monospace;">—</div>
+                <div id="result-verdict" style="font-size: 12px; margin-top: 4px;"></div>
+            </div>
+
+            <!-- Category Breakdown -->
+            <div id="result-categories"></div>
+
+            <!-- Flagged Text -->
+            <div id="result-flagged" style="margin-top: 20px;"></div>
+
+            <!-- Recommendations -->
+            <div id="result-recommendations" style="margin-top: 20px;"></div>
+
+            <!-- CTA -->
+            <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray);">
+                <p style="font-size: 12px; color: var(--gray-dark); margin-bottom: 12px;">
+                    Want full access? Analyze datasets, run compliance reports, and set community fairness standards.
+                </p>
+                <a href="/register" class="mac-btn mac-btn-primary">Get Your API Key &mdash; Free</a>
+                <a href="/api-docs" class="mac-btn">View All Endpoints</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Error Window ═══ -->
+    <div id="demo-error" class="window" style="display: none;">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Error</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="text-align: center; padding: 24px;">
+            <div style="font-size: 28px; margin-bottom: 12px;">&#9888;</div>
+            <p id="error-message" style="font-size: 13px; margin-bottom: 16px;"></p>
+            <button class="mac-btn" onclick="document.getElementById('demo-error').style.display='none'">OK</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer-bar">
+    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    <div class="footer-links">
+        <a href="/api-docs">Docs</a>
+        <a href="/demo">Demo</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
+        <a href="/api/v1/health">Status</a>
+    </div>
+</div>
+
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/api.js"></script>
+<script>
+const input = document.getElementById('demo-input');
+const charCount = document.getElementById('demo-chars');
+
+input.addEventListener('input', () => {
+    const len = input.value.length;
+    charCount.textContent = len + ' / 500';
+    charCount.style.color = len > 500 ? '#000' : 'var(--gray-dark)';
+    if (len > 500) input.value = input.value.slice(0, 500);
+});
+
+async function runDemo() {
+    const text = input.value.trim();
+    if (!text) {
+        document.getElementById('demo-status').textContent = 'Please enter some text first.';
+        return;
+    }
+
+    const btn = document.getElementById('demo-btn');
+    const loading = document.getElementById('demo-loading');
+    const results = document.getElementById('demo-results');
+    const errorEl = document.getElementById('demo-error');
+
+    btn.disabled = true;
+    btn.textContent = 'Analyzing...';
+    loading.style.display = 'block';
+    results.style.display = 'none';
+    errorEl.style.display = 'none';
+
+    try {
+        const data = await demoAnalyze(text);
+        renderResults(data, text);
+        loading.style.display = 'none';
+        results.style.display = 'block';
+        results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (err) {
+        loading.style.display = 'none';
+        document.getElementById('error-message').textContent = err.message;
+        errorEl.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Analyze for Bias';
+    }
+}
+
+function renderResults(data, originalText) {
+    // Overall score
+    const score = Math.round(data.overall_score);
+    document.getElementById('result-score').textContent = score + '/100';
+    const verdict = document.getElementById('result-verdict');
+    if (score >= 80) {
+        verdict.textContent = 'Low bias detected';
+        verdict.style.color = 'var(--gray-dark)';
+    } else if (score >= 50) {
+        verdict.textContent = 'Moderate bias detected — review recommended';
+        verdict.style.color = 'var(--gray-darker)';
+    } else {
+        verdict.textContent = 'Significant bias detected — action needed';
+        verdict.style.fontWeight = '500';
+        verdict.style.color = 'var(--black)';
+    }
+
+    // Category bars
+    const catEl = document.getElementById('result-categories');
+    catEl.innerHTML = '<div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">CATEGORY BREAKDOWN</div>';
+    (data.bias_scores || []).forEach(cat => {
+        const s = Math.round(cat.score);
+        const cls = s >= 80 ? 'good' : s >= 50 ? 'warn' : 'bad';
+        catEl.innerHTML += `
+            <div class="score-bar-container">
+                <div class="score-bar-label">
+                    <span>${cat.category}</span>
+                    <span>${s}/100</span>
+                </div>
+                <div class="score-bar">
+                    <div class="score-bar-fill ${cls}" style="width: ${s}%;"></div>
+                </div>
+            </div>`;
+    });
+
+    // Flagged phrases
+    const flagEl = document.getElementById('result-flagged');
+    const allPhrases = (data.bias_scores || []).flatMap(c => c.flagged_phrases || []);
+    if (allPhrases.length > 0) {
+        let highlighted = originalText;
+        const sorted = [...allPhrases].sort((a, b) => b.start - a.start);
+        sorted.forEach(p => {
+            const before = highlighted.slice(0, p.start);
+            const match = highlighted.slice(p.start, p.end);
+            const after = highlighted.slice(p.end);
+            const tip = (p.suggestion || p.category).replace(/"/g, '&quot;');
+            highlighted = before + `<mark data-tip="${tip}">${match}</mark>` + after;
+        });
+        flagEl.innerHTML = `
+            <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">FLAGGED PHRASES (hover for suggestions)</div>
+            <div class="flagged-text" style="font-size: 13px; line-height: 1.8; padding: 12px; border: 2px solid var(--black); background: var(--gray-light);">${highlighted}</div>`;
+    } else {
+        flagEl.innerHTML = '';
+    }
+
+    // Recommendations
+    const recEl = document.getElementById('result-recommendations');
+    if (data.recommendations && data.recommendations.length > 0) {
+        recEl.innerHTML = '<div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">RECOMMENDATIONS</div>';
+        data.recommendations.forEach(r => {
+            recEl.innerHTML += `<div style="padding: 4px 0; font-size: 12px;">&#9654; ${r}</div>`;
+        });
+    } else {
+        recEl.innerHTML = '';
+    }
+}
+</script>
+
+</body>
+</html>

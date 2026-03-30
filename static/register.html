@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started — FairLens API</title>
+    <meta name="description" content="Get your free FairLens API key. 100 calls per month, bias detection across 4 categories, instant access.">
+    <link rel="stylesheet" href="/static/css/system7.css">
+</head>
+<body>
+
+<!-- ═══ Menu Bar ═══ -->
+<div class="menu-bar">
+    <span class="apple-logo">&#9878;</span>
+    <div class="menu-item">
+        <strong>FairLens</strong>
+        <div class="dropdown">
+            <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="/dashboard">Dashboard <span class="shortcut">&#8984;B</span></a>
+        </div>
+    </div>
+    <div class="menu-item">
+        API
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/demo">Live Demo <span class="shortcut">&#8984;T</span></a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/register">Get API Key</a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+        </div>
+    </div>
+    <div class="menu-item">
+        Compliance
+        <div class="dropdown">
+            <a class="dropdown-item" href="/api-docs#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Colorado AI Act</a>
+        </div>
+    </div>
+</div>
+
+<div class="desktop">
+
+    <!-- ═══ Register Window ═══ -->
+    <div class="window" id="register-form">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Get Your API Key</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="text-align: center;">
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <div class="sprite-key">
+                    <div class="bow"></div>
+                    <div class="bow-hole"></div>
+                    <div class="shaft"></div>
+                    <div class="teeth1"></div>
+                    <div class="teeth2"></div>
+                </div>
+            </div>
+            <h2 style="font-size: 20px; font-weight: 500; margin-bottom: 8px;">Start Building</h2>
+            <p style="font-size: 13px; color: var(--gray-darker); max-width: 400px; margin: 0 auto 24px; line-height: 1.6;">
+                Enter your email to get a free API key. 100 calls per month,
+                bias detection across 4 categories, instant access.
+            </p>
+
+            <div style="max-width: 360px; margin: 0 auto;">
+                <input type="email" id="reg-email" class="mac-input" placeholder="you@company.com" style="margin-bottom: 12px;">
+                <button id="reg-btn" class="mac-btn mac-btn-primary" style="width: 100%;" onclick="doRegister()">
+                    Create Free Account
+                </button>
+                <p id="reg-error" style="font-size: 12px; color: var(--gray-darker); margin-top: 8px; display: none;"></p>
+            </div>
+
+            <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray);">
+                <p style="font-size: 12px; color: var(--gray-dark);">
+                    Already have an account? Use your existing API key with the
+                    <a href="/api-docs" style="color: var(--black); font-weight: 500;">API documentation</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ What You Get Window ═══ -->
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Free Tier Includes</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="padding: 0;">
+            <div class="feature-grid">
+                <div class="feature-cell">
+                    <div class="feature-header"><div class="feature-icon-sm">100</div><h3>Monthly Calls</h3></div>
+                    <p>100 API requests per month. Enough to integrate and test in your app.</p>
+                </div>
+                <div class="feature-cell">
+                    <div class="feature-header"><div class="feature-icon-sm">Aa</div><h3>Text Analysis</h3></div>
+                    <p>Scan text for gender, race, age, and disability bias with 181 patterns.</p>
+                </div>
+                <div class="feature-cell">
+                    <div class="feature-header"><div class="feature-icon-sm">&lt;1s</div><h3>Instant Results</h3></div>
+                    <p>Sub-100ms response times. No queuing, no LLM latency, deterministic.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══ Alert Dialog (API Key Display) ═══ -->
+<div id="key-alert" class="alert-overlay">
+    <div class="alert-dialog">
+        <div class="alert-title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Your API Key</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="alert-body">
+            <div style="font-size: 28px; margin-bottom: 8px;">&#9878;</div>
+            <p><strong>Save this key now.</strong> It will not be shown again.</p>
+            <div style="position: relative; margin-bottom: 16px;">
+                <input type="text" id="key-display" class="mac-input" readonly style="font-family: 'DM Mono', monospace; font-size: 12px; padding-right: 60px;">
+                <button onclick="copyKey()" class="mac-btn" style="position: absolute; right: 2px; top: 2px; padding: 4px 10px; font-size: 11px; margin: 0;" id="copy-btn">Copy</button>
+            </div>
+
+            <div style="text-align: left; border: 2px solid var(--black); background: var(--gray-light); padding: 12px; margin-bottom: 16px;">
+                <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">QUICK START</div>
+                <div class="code-body" style="padding: 0; font-size: 11px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;" id="quickstart-code"></div>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: center;">
+                <a href="/demo" class="mac-btn">Try Demo</a>
+                <a href="/api-docs" class="mac-btn">View Docs</a>
+                <button class="mac-btn mac-btn-primary" onclick="document.getElementById('key-alert').classList.remove('visible')">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer-bar">
+    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    <div class="footer-links">
+        <a href="/api-docs">Docs</a>
+        <a href="/demo">Demo</a>
+        <a href="/dashboard">Dashboard</a>
+        <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
+        <a href="/api/v1/health">Status</a>
+    </div>
+</div>
+
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/api.js"></script>
+<script>
+// Enter key submits
+document.getElementById('reg-email').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doRegister();
+});
+
+async function doRegister() {
+    const email = document.getElementById('reg-email').value.trim();
+    const errEl = document.getElementById('reg-error');
+    const btn = document.getElementById('reg-btn');
+
+    if (!email || !email.includes('@')) {
+        errEl.textContent = 'Please enter a valid email address.';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Creating account...';
+    errEl.style.display = 'none';
+
+    try {
+        const data = await registerUser(email);
+        const key = data.api_key;
+
+        document.getElementById('key-display').value = key;
+        document.getElementById('quickstart-code').textContent =
+            `curl -X POST ${window.location.origin}/api/v1/analyze/text \\\n` +
+            `  -H "X-API-Key: ${key}" \\\n` +
+            `  -H "Content-Type: application/json" \\\n` +
+            `  -d '{"text": "Test for bias"}'`;
+
+        document.getElementById('key-alert').classList.add('visible');
+    } catch (err) {
+        errEl.textContent = err.message;
+        errEl.style.display = 'block';
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Free Account';
+    }
+}
+
+function copyKey() {
+    const input = document.getElementById('key-display');
+    navigator.clipboard.writeText(input.value).then(() => {
+        const btn = document.getElementById('copy-btn');
+        btn.textContent = 'Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+}
+</script>
+
+</body>
+</html>

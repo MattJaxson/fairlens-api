@@ -5,503 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FairLens API — Community-Governed AI Fairness</title>
     <meta name="description" content="The first AI fairness API where communities set the standard. Bias detection, racial fairness auditing, LL144 compliance. Built in Detroit.">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Geneva:wght@400&display=swap');
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --white: #FFFFFF;
-            --black: #000000;
-            --gray-light: #F0F0F0;
-            --gray: #C0C0C0;
-            --gray-dark: #808080;
-            --gray-darker: #404040;
-            --bg: #6688AA;
-            --window-bg: #FFFFFF;
-            --title-bar: linear-gradient(180deg, #FFFFFF 0%, #C0C0C0 100%);
-            --shadow: 1px 1px 0 #000, 2px 2px 0 rgba(0,0,0,0.15);
-            --window-shadow: 2px 2px 0 #000, 3px 3px 0 rgba(0,0,0,0.1), 4px 4px 8px rgba(0,0,0,0.2);
-        }
-
-        body {
-            font-family: 'Geneva', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: var(--bg);
-            color: var(--black);
-            line-height: 1.5;
-            font-size: 13px;
-            min-height: 100vh;
-            cursor: default;
-            background-image:
-                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
-        }
-
-        /* ── Menu Bar ──────────────────────────────────── */
-        .menu-bar {
-            background: var(--white);
-            border-bottom: 2px solid var(--black);
-            padding: 2px 12px;
-            display: flex;
-            align-items: center;
-            height: 24px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            font-size: 13px;
-            user-select: none;
-        }
-        .menu-bar .apple-logo {
-            font-weight: bold;
-            margin-right: 16px;
-            font-size: 15px;
-        }
-        .menu-item {
-            padding: 2px 12px;
-            cursor: default;
-            font-weight: 500;
-            position: relative;
-        }
-        .menu-item:hover {
-            background: var(--black);
-            color: var(--white);
-        }
-        .menu-item .dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            background: var(--white);
-            border: 2px solid var(--black);
-            min-width: 180px;
-            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
-            z-index: 1001;
-        }
-        .menu-item:hover .dropdown {
-            display: block;
-        }
-        .dropdown-item {
-            padding: 4px 16px;
-            color: var(--black);
-            white-space: nowrap;
-            text-decoration: none;
-            display: block;
-        }
-        .dropdown-item:hover {
-            background: var(--black);
-            color: var(--white);
-        }
-        .dropdown-divider {
-            border-top: 1px solid var(--gray);
-            margin: 2px 0;
-        }
-        .dropdown-item .shortcut {
-            float: right;
-            color: var(--gray-dark);
-            margin-left: 24px;
-        }
-        .dropdown-item:hover .shortcut {
-            color: var(--gray);
-        }
-
-        /* ── Window Chrome ─────────────────────────────── */
-        .window {
-            background: var(--window-bg);
-            border: 2px solid var(--black);
-            box-shadow: var(--window-shadow);
-            margin: 16px auto;
-            max-width: 760px;
-            position: relative;
-        }
-        .window-wide {
-            max-width: 880px;
-        }
-        .title-bar {
-            background: var(--title-bar);
-            border-bottom: 2px solid var(--black);
-            padding: 3px 8px;
-            display: flex;
-            align-items: center;
-            height: 22px;
-            user-select: none;
-        }
-        .title-bar-lines {
-            flex: 1;
-            height: 12px;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 1px,
-                var(--black) 1px,
-                var(--black) 2px,
-                transparent 2px,
-                transparent 3px
-            );
-            margin: 0 8px;
-        }
-        .title-bar-lines-left {
-            margin-left: 0;
-        }
-        .close-box {
-            width: 13px;
-            height: 13px;
-            border: 2px solid var(--black);
-            background: var(--white);
-            flex-shrink: 0;
-        }
-        .title-text {
-            font-weight: 500;
-            font-size: 13px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-        .window-body {
-            padding: 20px 24px;
-        }
-
-        /* ── Desktop Grid ──────────────────────────────── */
-        .desktop {
-            padding: 12px 20px 40px;
-            max-width: 920px;
-            margin: 0 auto;
-        }
-
-        /* ── Hero Window ───────────────────────────────── */
-        .hero-content {
-            text-align: center;
-            padding: 32px 24px;
-        }
-        .hero-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 20px;
-            border: 2px solid var(--black);
-            background: var(--gray-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: var(--shadow);
-        }
-        .hero-content h1 {
-            font-size: 26px;
-            font-weight: 500;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-        .hero-content p {
-            font-size: 13px;
-            color: var(--gray-darker);
-            max-width: 480px;
-            margin: 0 auto 24px;
-            line-height: 1.6;
-        }
-        .hero-content .highlight {
-            font-weight: 500;
-            color: var(--black);
-        }
-
-        /* ── Mac Buttons ───────────────────────────────── */
-        .mac-btn {
-            display: inline-block;
-            padding: 6px 20px;
-            border: 2px solid var(--black);
-            background: var(--white);
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: var(--shadow);
-            text-decoration: none;
-            color: var(--black);
-            margin: 4px;
-            user-select: none;
-        }
-        .mac-btn:active {
-            background: var(--black);
-            color: var(--white);
-            box-shadow: none;
-            transform: translate(1px, 1px);
-        }
-        .mac-btn-primary {
-            background: var(--black);
-            color: var(--white);
-            border-radius: 6px;
-            padding: 8px 24px;
-            border: 3px solid var(--black);
-            box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--black), 2px 2px 0 4px rgba(0,0,0,0.1);
-        }
-        .mac-btn-primary:active {
-            background: var(--gray-darker);
-        }
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* ── Code Window ───────────────────────────────── */
-        .code-body {
-            background: var(--white);
-            padding: 16px 20px;
-            font-family: 'DM Mono', 'Monaco', 'Courier New', monospace;
-            font-size: 12px;
-            line-height: 1.7;
-            overflow-x: auto;
-            white-space: pre;
-        }
-        .cm { color: #808080; }
-        .kw { color: #000; font-weight: bold; }
-        .str { color: #404040; }
-        .num { font-weight: bold; }
-
-        /* ── Feature Cards ─────────────────────────────── */
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0;
-        }
-        .feature-cell {
-            border-right: 1px solid var(--gray);
-            border-bottom: 1px solid var(--gray);
-            padding: 20px;
-        }
-        .feature-cell:nth-child(3n) {
-            border-right: none;
-        }
-        .feature-cell:nth-child(n+4) {
-            border-bottom: none;
-        }
-        .feature-icon-sm {
-            width: 32px;
-            height: 32px;
-            border: 2px solid var(--black);
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 500;
-            margin-bottom: 10px;
-            box-shadow: 1px 1px 0 #000;
-            font-family: 'DM Mono', monospace;
-        }
-        .feature-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 6px;
-        }
-        .feature-cell h3 {
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 0;
-        }
-        .feature-cell p {
-            font-size: 12px;
-            color: var(--gray-darker);
-            line-height: 1.5;
-        }
-
-        /* ── Pricing ──────────────────────────────────── */
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0;
-            border: 1px solid var(--black);
-        }
-        .price-col {
-            border-right: 1px solid var(--black);
-            padding: 20px;
-            text-align: center;
-        }
-        .price-col:last-child {
-            border-right: none;
-        }
-        .price-col.featured {
-            background: var(--gray-light);
-        }
-        .price-col h3 {
-            font-size: 15px;
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-        .price-amount {
-            font-size: 32px;
-            font-weight: 500;
-            margin: 12px 0 4px;
-        }
-        .price-period {
-            font-size: 12px;
-            color: var(--gray-dark);
-            margin-bottom: 16px;
-        }
-        .price-col ul {
-            list-style: none;
-            text-align: left;
-            margin-bottom: 20px;
-        }
-        .price-col li {
-            padding: 3px 0;
-            font-size: 12px;
-            color: var(--gray-darker);
-        }
-        .price-col li::before {
-            content: '\25A0  ';
-            font-size: 8px;
-            vertical-align: middle;
-        }
-        .featured-label {
-            display: inline-block;
-            background: var(--black);
-            color: var(--white);
-            font-size: 10px;
-            font-weight: 500;
-            padding: 2px 8px;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── CDF Section ──────────────────────────────── */
-        .cdf-content {
-            display: flex;
-            gap: 24px;
-            align-items: flex-start;
-        }
-        .cdf-icon-col {
-            flex-shrink: 0;
-        }
-        .cdf-icon-large {
-            width: 64px;
-            height: 64px;
-            border: 2px solid var(--black);
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: var(--shadow);
-        }
-        .cdf-text h2 {
-            font-size: 17px;
-            font-weight: 500;
-            margin-bottom: 10px;
-        }
-        .cdf-text p {
-            font-size: 13px;
-            color: var(--gray-darker);
-            margin-bottom: 10px;
-            line-height: 1.6;
-        }
-        .cdf-text .highlight {
-            color: var(--black);
-            font-weight: 500;
-        }
-        .cdf-list {
-            list-style: none;
-            margin: 12px 0;
-        }
-        .cdf-list li {
-            padding: 3px 0;
-            font-size: 13px;
-        }
-        .cdf-list li::before {
-            content: '\25B6  ';
-            font-size: 9px;
-            vertical-align: middle;
-        }
-
-        /* ── Compliance Badges ─────────────────────────── */
-        .compliance-row {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
-        .compliance-badge {
-            border: 2px solid var(--black);
-            padding: 6px 14px;
-            font-size: 11px;
-            font-weight: 500;
-            background: var(--white);
-            box-shadow: 1px 1px 0 #000;
-        }
-
-        /* ── Footer ────────────────────────────────────── */
-        .footer-bar {
-            background: var(--white);
-            border-top: 2px solid var(--black);
-            padding: 8px 20px;
-            text-align: center;
-            font-size: 12px;
-            color: var(--gray-dark);
-            margin-top: 24px;
-        }
-        .footer-links {
-            margin-top: 4px;
-        }
-        .footer-links a {
-            color: var(--black);
-            text-decoration: none;
-            margin: 0 10px;
-            font-weight: 500;
-        }
-        .footer-links a:hover {
-            text-decoration: underline;
-        }
-
-        /* ── Scrollbar ─────────────────────────────────── */
-        .scroll-body {
-            max-height: 260px;
-            overflow-y: auto;
-        }
-        .scroll-body::-webkit-scrollbar {
-            width: 16px;
-        }
-        .scroll-body::-webkit-scrollbar-track {
-            background: var(--white);
-            border-left: 1px solid var(--black);
-        }
-        .scroll-body::-webkit-scrollbar-thumb {
-            background: var(--gray);
-            border: 1px solid var(--black);
-        }
-
-        /* ── Section Spacing ───────────────────────────── */
-        .window + .window {
-            margin-top: 20px;
-        }
-        .section-label {
-            font-size: 12px;
-            color: rgba(255,255,255,0.7);
-            margin: 24px auto 8px;
-            max-width: 760px;
-            padding-left: 4px;
-            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
-        }
-        .section-label-wide {
-            max-width: 880px;
-        }
-
-        /* ── Responsive ────────────────────────────────── */
-        @media (max-width: 768px) {
-            .desktop { padding: 8px 10px 30px; }
-            .window { margin: 10px auto; }
-            .feature-grid { grid-template-columns: 1fr; }
-            .feature-cell { border-right: none; border-bottom: 1px solid var(--gray); }
-            .feature-cell:last-child { border-bottom: none; }
-            .pricing-grid { grid-template-columns: 1fr; }
-            .price-col { border-right: none; border-bottom: 1px solid var(--black); }
-            .price-col:last-child { border-bottom: none; }
-            .hero-content h1 { font-size: 20px; }
-            .cdf-content { flex-direction: column; }
-            .hero-content { padding: 24px 16px; }
-            .window-body { padding: 16px; }
-        }
-    </style>
+    <link rel="stylesheet" href="/static/css/system7.css">
 </head>
 <body>
 
@@ -511,28 +15,43 @@
     <div class="menu-item">
         <strong>FairLens</strong>
         <div class="dropdown">
-            <a class="dropdown-item" href="#about">About FairLens</a>
+            <a class="dropdown-item" href="/">Home</a>
+            <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="/dashboard">Dashboard <span class="shortcut">&#8984;B</span></a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#cdf">CDF v1.0 <span class="shortcut">&#8984;F</span></a>
             <a class="dropdown-item" href="#pricing">Pricing <span class="shortcut">&#8984;P</span></a>
         </div>
     </div>
     <div class="menu-item">
         API
         <div class="dropdown">
-            <a class="dropdown-item" href="/docs">Documentation <span class="shortcut">&#8984;D</span></a>
-            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+            <a class="dropdown-item" href="/api-docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/demo">Live Demo <span class="shortcut">&#8984;T</span></a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="/api/v1/keys">Get API Key</a>
+            <a class="dropdown-item" href="/register">Get API Key</a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
         </div>
     </div>
     <div class="menu-item">
         Compliance
         <div class="dropdown">
-            <a class="dropdown-item" href="#compliance">NYC LL144</a>
-            <a class="dropdown-item" href="#compliance">Michigan HB 4668</a>
-            <a class="dropdown-item" href="#compliance">Colorado AI Act</a>
+            <a class="dropdown-item" href="/api-docs#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="/api-docs#compliance">Colorado AI Act</a>
         </div>
+    </div>
+</div>
+
+<!-- ═══ Live Stats Strip ═══ -->
+<div class="stats-strip">
+    <div class="stat-item">
+        <span class="stat-num" id="stat-analyses">—</span> analyses run
+    </div>
+    <div class="stat-item">
+        <span class="stat-num" id="stat-users">—</span> users
+    </div>
+    <div class="stat-item">
+        <span class="stat-num" id="stat-communities">—</span> communities
     </div>
 </div>
 
@@ -547,7 +66,15 @@
             <div class="title-bar-lines"></div>
         </div>
         <div class="window-body hero-content">
-            <div class="hero-icon">&#9878;</div>
+            <div class="hero-icon" style="position: relative;">
+                <div class="sprite-scales">
+                    <div class="beam"></div>
+                    <div class="pillar"></div>
+                    <div class="pan-l"></div>
+                    <div class="pan-r"></div>
+                    <div class="base"></div>
+                </div>
+            </div>
             <h1>Community-Governed<br>AI Fairness</h1>
             <p>
                 The first fairness API where <span class="highlight">communities set the standard</span> &mdash;
@@ -555,8 +82,8 @@
                 Bias detection. Racial fairness auditing. Regulatory compliance.
             </p>
             <div class="btn-row">
-                <a href="/docs" class="mac-btn mac-btn-primary">Open Docs</a>
-                <a href="#cdf" class="mac-btn">What is CDF v1.0?</a>
+                <a href="/demo" class="mac-btn mac-btn-primary">Try Live Demo</a>
+                <a href="/community" class="mac-btn">What is CDF v1.0?</a>
                 <a href="#pricing" class="mac-btn">Pricing</a>
             </div>
         </div>
@@ -590,6 +117,9 @@
                         <li>Staleness tracking &mdash; standards expire and get reviewed</li>
                         <li>Priority groups identified by the community, not assumed</li>
                     </ul>
+                    <div style="margin-top: 16px;">
+                        <a href="/community" class="mac-btn">Read the Full Story &rarr;</a>
+                    </div>
                     <div class="compliance-row" id="compliance">
                         <span class="compliance-badge">NYC LL144</span>
                         <span class="compliance-badge">Michigan HB 4668</span>
@@ -690,7 +220,7 @@
                         <li>4 bias categories</li>
                         <li>Community support</li>
                     </ul>
-                    <a href="/api/v1/keys" class="mac-btn" style="width: 80%; display: inline-block;">Start Free</a>
+                    <a href="/register" class="mac-btn" style="width: 80%; display: inline-block;">Start Free</a>
                 </div>
                 <div class="price-col featured">
                     <span class="featured-label">RECOMMENDED</span>
@@ -704,7 +234,7 @@
                         <li>Saved reports &amp; history</li>
                         <li>Priority support</li>
                     </ul>
-                    <a href="/api/v1/billing/create-checkout" class="mac-btn mac-btn-primary" style="width: 80%; display: inline-block;">Start Pro</a>
+                    <a href="/register" class="mac-btn mac-btn-primary" style="width: 80%; display: inline-block;">Start Pro</a>
                 </div>
                 <div class="price-col">
                     <h3>Enterprise</h3>
@@ -730,20 +260,16 @@
 <div class="footer-bar">
     FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
     <div class="footer-links">
-        <a href="/docs">Docs</a>
+        <a href="/api-docs">Docs</a>
+        <a href="/demo">Demo</a>
+        <a href="/dashboard">Dashboard</a>
         <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
         <a href="/api/v1/health">Status</a>
     </div>
 </div>
 
-<script>
-// Close dropdowns when clicking elsewhere
-document.addEventListener('click', (e) => {
-    if (!e.target.closest('.menu-item')) {
-        document.querySelectorAll('.dropdown').forEach(d => d.style.display = '');
-    }
-});
-</script>
+<script src="/static/js/menu.js"></script>
+<script src="/static/js/api.js"></script>
 
 </body>
 </html>
