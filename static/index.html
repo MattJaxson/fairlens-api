@@ -3,231 +3,615 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FairLens API — Bias Detection & Fairness Scoring</title>
-    <meta name="description" content="AI-powered bias detection API. Analyze text for gender, racial, age, and disability bias. Score datasets for fairness. Enterprise-ready.">
+    <title>FairLens API — Community-Governed AI Fairness</title>
+    <meta name="description" content="The first AI fairness API where communities set the standard. Bias detection, racial fairness auditing, LL144 compliance. Built in Detroit.">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Geneva:wght@400&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
         :root {
-            --primary: #6C3CE1;
-            --primary-dark: #5228CC;
-            --accent: #00D4AA;
-            --bg: #0A0A0F;
-            --surface: #13131A;
-            --surface-2: #1C1C28;
-            --text: #E8E8F0;
-            --text-muted: #8888A0;
-            --border: #2A2A3C;
+            --white: #FFFFFF;
+            --black: #000000;
+            --gray-light: #F0F0F0;
+            --gray: #C0C0C0;
+            --gray-dark: #808080;
+            --gray-darker: #404040;
+            --bg: #6688AA;
+            --window-bg: #FFFFFF;
+            --title-bar: linear-gradient(180deg, #FFFFFF 0%, #C0C0C0 100%);
+            --shadow: 1px 1px 0 #000, 2px 2px 0 rgba(0,0,0,0.15);
+            --window-shadow: 2px 2px 0 #000, 3px 3px 0 rgba(0,0,0,0.1), 4px 4px 8px rgba(0,0,0,0.2);
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Geneva', 'Helvetica Neue', Helvetica, Arial, sans-serif;
             background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-        }
-        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
-
-        /* Nav */
-        nav {
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0; background: var(--bg); z-index: 100;
-        }
-        nav .container { display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 22px; font-weight: 700; color: var(--text); text-decoration: none; }
-        .logo span { color: var(--accent); }
-        nav a { color: var(--text-muted); text-decoration: none; margin-left: 28px; font-size: 14px; }
-        nav a:hover { color: var(--text); }
-
-        /* Hero */
-        .hero {
-            padding: 100px 0 80px;
-            text-align: center;
-        }
-        .badge {
-            display: inline-block;
-            background: var(--surface-2);
-            border: 1px solid var(--border);
-            padding: 6px 16px;
-            border-radius: 20px;
+            color: var(--black);
+            line-height: 1.5;
             font-size: 13px;
-            color: var(--accent);
-            margin-bottom: 24px;
+            min-height: 100vh;
+            cursor: default;
+            background-image:
+                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 50%);
         }
-        h1 {
-            font-size: 52px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
+
+        /* ── Menu Bar ──────────────────────────────────── */
+        .menu-bar {
+            background: var(--white);
+            border-bottom: 2px solid var(--black);
+            padding: 2px 12px;
+            display: flex;
+            align-items: center;
+            height: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-size: 13px;
+            user-select: none;
         }
-        h1 .gradient {
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero p {
-            font-size: 18px;
-            color: var(--text-muted);
-            max-width: 560px;
-            margin: 0 auto 36px;
-        }
-        .cta-row { display: flex; gap: 14px; justify-content: center; }
-        .btn {
-            padding: 14px 28px;
-            border-radius: 8px;
+        .menu-bar .apple-logo {
+            font-weight: bold;
+            margin-right: 16px;
             font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            transition: transform 0.15s;
         }
-        .btn:hover { transform: translateY(-1px); }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
-
-        /* Code Demo */
-        .demo {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 0;
-            margin: 60px auto;
-            max-width: 680px;
-            overflow: hidden;
-        }
-        .demo-header {
-            padding: 12px 20px;
-            background: var(--surface-2);
-            font-size: 13px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-        }
-        .demo pre {
-            padding: 20px;
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 13px;
-            line-height: 1.7;
-            overflow-x: auto;
-        }
-        .demo .kw { color: #C792EA; }
-        .demo .str { color: #C3E88D; }
-        .demo .fn { color: #82AAFF; }
-        .demo .num { color: #F78C6C; }
-        .demo .cm { color: #546E7A; }
-
-        /* Pricing */
-        .pricing { padding: 80px 0; }
-        .pricing h2 { text-align: center; font-size: 36px; margin-bottom: 12px; }
-        .pricing .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 48px; }
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .price-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-        }
-        .price-card.featured {
-            border-color: var(--primary);
+        .menu-item {
+            padding: 2px 12px;
+            cursor: default;
+            font-weight: 500;
             position: relative;
         }
-        .price-card.featured::before {
-            content: 'MOST POPULAR';
+        .menu-item:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        .menu-item .dropdown {
+            display: none;
             position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--primary);
-            color: white;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 14px;
-            border-radius: 10px;
+            top: 100%;
+            left: 0;
+            background: var(--white);
+            border: 2px solid var(--black);
+            min-width: 180px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+            z-index: 1001;
         }
-        .price-card h3 { font-size: 20px; margin-bottom: 8px; }
-        .price-card .price { font-size: 40px; font-weight: 800; margin: 16px 0 8px; }
-        .price-card .price span { font-size: 16px; font-weight: 400; color: var(--text-muted); }
-        .price-card .desc { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
-        .price-card ul { list-style: none; margin-bottom: 28px; }
-        .price-card li {
-            padding: 6px 0;
-            font-size: 14px;
-            color: var(--text-muted);
+        .menu-item:hover .dropdown {
+            display: block;
         }
-        .price-card li::before { content: '✓ '; color: var(--accent); font-weight: 700; }
-        .price-card .btn { display: block; text-align: center; width: 100%; }
+        .dropdown-item {
+            padding: 4px 16px;
+            color: var(--black);
+            white-space: nowrap;
+            text-decoration: none;
+            display: block;
+        }
+        .dropdown-item:hover {
+            background: var(--black);
+            color: var(--white);
+        }
+        .dropdown-divider {
+            border-top: 1px solid var(--gray);
+            margin: 2px 0;
+        }
+        .dropdown-item .shortcut {
+            float: right;
+            color: var(--gray-dark);
+            margin-left: 24px;
+        }
+        .dropdown-item:hover .shortcut {
+            color: var(--gray);
+        }
 
-        /* Features */
-        .features { padding: 80px 0; }
-        .features h2 { text-align: center; font-size: 36px; margin-bottom: 48px; }
+        /* ── Window Chrome ─────────────────────────────── */
+        .window {
+            background: var(--window-bg);
+            border: 2px solid var(--black);
+            box-shadow: var(--window-shadow);
+            margin: 16px auto;
+            max-width: 760px;
+            position: relative;
+        }
+        .window-wide {
+            max-width: 880px;
+        }
+        .title-bar {
+            background: var(--title-bar);
+            border-bottom: 2px solid var(--black);
+            padding: 3px 8px;
+            display: flex;
+            align-items: center;
+            height: 22px;
+            user-select: none;
+        }
+        .title-bar-lines {
+            flex: 1;
+            height: 12px;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 1px,
+                var(--black) 1px,
+                var(--black) 2px,
+                transparent 2px,
+                transparent 3px
+            );
+            margin: 0 8px;
+        }
+        .title-bar-lines-left {
+            margin-left: 0;
+        }
+        .close-box {
+            width: 13px;
+            height: 13px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            flex-shrink: 0;
+        }
+        .title-text {
+            font-weight: 500;
+            font-size: 13px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .window-body {
+            padding: 20px 24px;
+        }
+
+        /* ── Desktop Grid ──────────────────────────────── */
+        .desktop {
+            padding: 12px 20px 40px;
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        /* ── Hero Window ───────────────────────────────── */
+        .hero-content {
+            text-align: center;
+            padding: 32px 24px;
+        }
+        .hero-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            border: 2px solid var(--black);
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: var(--shadow);
+        }
+        .hero-content h1 {
+            font-size: 26px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
+        .hero-content p {
+            font-size: 13px;
+            color: var(--gray-darker);
+            max-width: 480px;
+            margin: 0 auto 24px;
+            line-height: 1.6;
+        }
+        .hero-content .highlight {
+            font-weight: 500;
+            color: var(--black);
+        }
+
+        /* ── Mac Buttons ───────────────────────────────── */
+        .mac-btn {
+            display: inline-block;
+            padding: 6px 20px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            text-decoration: none;
+            color: var(--black);
+            margin: 4px;
+            user-select: none;
+        }
+        .mac-btn:active {
+            background: var(--black);
+            color: var(--white);
+            box-shadow: none;
+            transform: translate(1px, 1px);
+        }
+        .mac-btn-primary {
+            background: var(--black);
+            color: var(--white);
+            border-radius: 6px;
+            padding: 8px 24px;
+            border: 3px solid var(--black);
+            box-shadow: 0 0 0 2px var(--white), 0 0 0 4px var(--black), 2px 2px 0 4px rgba(0,0,0,0.1);
+        }
+        .mac-btn-primary:active {
+            background: var(--gray-darker);
+        }
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ── Code Window ───────────────────────────────── */
+        .code-body {
+            background: var(--white);
+            padding: 16px 20px;
+            font-family: 'DM Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.7;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .cm { color: #808080; }
+        .kw { color: #000; font-weight: bold; }
+        .str { color: #404040; }
+        .num { font-weight: bold; }
+
+        /* ── Feature Cards ─────────────────────────────── */
         .feature-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 0;
         }
-        .feature-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 28px;
+        .feature-cell {
+            border-right: 1px solid var(--gray);
+            border-bottom: 1px solid var(--gray);
+            padding: 20px;
         }
-        .feature-card h3 { font-size: 17px; margin-bottom: 8px; }
-        .feature-card p { color: var(--text-muted); font-size: 14px; }
-        .feature-icon { font-size: 28px; margin-bottom: 12px; }
+        .feature-cell:nth-child(3n) {
+            border-right: none;
+        }
+        .feature-cell:nth-child(n+4) {
+            border-bottom: none;
+        }
+        .feature-icon-sm {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--black);
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-shadow: 1px 1px 0 #000;
+        }
+        .feature-cell h3 {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        .feature-cell p {
+            font-size: 12px;
+            color: var(--gray-darker);
+            line-height: 1.5;
+        }
 
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 40px 0;
+        /* ── Pricing ──────────────────────────────────── */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+            border: 1px solid var(--black);
+        }
+        .price-col {
+            border-right: 1px solid var(--black);
+            padding: 20px;
             text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
+        }
+        .price-col:last-child {
+            border-right: none;
+        }
+        .price-col.featured {
+            background: var(--gray-light);
+        }
+        .price-col h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+        .price-amount {
+            font-size: 32px;
+            font-weight: 500;
+            margin: 12px 0 4px;
+        }
+        .price-period {
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-bottom: 16px;
+        }
+        .price-col ul {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .price-col li {
+            padding: 3px 0;
+            font-size: 12px;
+            color: var(--gray-darker);
+        }
+        .price-col li::before {
+            content: '\25A0  ';
+            font-size: 8px;
+            vertical-align: middle;
+        }
+        .featured-label {
+            display: inline-block;
+            background: var(--black);
+            color: var(--white);
+            font-size: 10px;
+            font-weight: 500;
+            padding: 2px 8px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
+        /* ── CDF Section ──────────────────────────────── */
+        .cdf-content {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+        }
+        .cdf-icon-col {
+            flex-shrink: 0;
+        }
+        .cdf-icon-large {
+            width: 72px;
+            height: 72px;
+            border: 2px solid var(--black);
+            background: var(--gray-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: var(--shadow);
+        }
+        .cdf-text h2 {
+            font-size: 17px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .cdf-text p {
+            font-size: 13px;
+            color: var(--gray-darker);
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        .cdf-text .highlight {
+            color: var(--black);
+            font-weight: 500;
+        }
+        .cdf-list {
+            list-style: none;
+            margin: 12px 0;
+        }
+        .cdf-list li {
+            padding: 3px 0;
+            font-size: 13px;
+        }
+        .cdf-list li::before {
+            content: '\25B6  ';
+            font-size: 9px;
+            vertical-align: middle;
+        }
+
+        /* ── Compliance Badges ─────────────────────────── */
+        .compliance-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .compliance-badge {
+            border: 2px solid var(--black);
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 500;
+            background: var(--white);
+            box-shadow: 1px 1px 0 #000;
+        }
+
+        /* ── Footer ────────────────────────────────────── */
+        .footer-bar {
+            background: var(--white);
+            border-top: 2px solid var(--black);
+            padding: 8px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-dark);
+            margin-top: 24px;
+        }
+        .footer-links {
+            margin-top: 4px;
+        }
+        .footer-links a {
+            color: var(--black);
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: 500;
+        }
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Scrollbar ─────────────────────────────────── */
+        .scroll-body {
+            max-height: 260px;
+            overflow-y: auto;
+        }
+        .scroll-body::-webkit-scrollbar {
+            width: 16px;
+        }
+        .scroll-body::-webkit-scrollbar-track {
+            background: var(--white);
+            border-left: 1px solid var(--black);
+        }
+        .scroll-body::-webkit-scrollbar-thumb {
+            background: var(--gray);
+            border: 1px solid var(--black);
+        }
+
+        /* ── Section Spacing ───────────────────────────── */
+        .window + .window {
+            margin-top: 20px;
+        }
+        .section-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin: 24px auto 8px;
+            max-width: 760px;
+            padding-left: 4px;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        }
+        .section-label-wide {
+            max-width: 880px;
+        }
+
+        /* ── Responsive ────────────────────────────────── */
         @media (max-width: 768px) {
-            h1 { font-size: 32px; }
-            .pricing-grid, .feature-grid { grid-template-columns: 1fr; }
-            .cta-row { flex-direction: column; align-items: center; }
+            .desktop { padding: 8px 10px 30px; }
+            .window { margin: 10px auto; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .feature-cell { border-right: none; border-bottom: 1px solid var(--gray); }
+            .feature-cell:last-child { border-bottom: none; }
+            .pricing-grid { grid-template-columns: 1fr; }
+            .price-col { border-right: none; border-bottom: 1px solid var(--black); }
+            .price-col:last-child { border-bottom: none; }
+            .hero-content h1 { font-size: 20px; }
+            .cdf-content { flex-direction: column; }
+            .hero-content { padding: 24px 16px; }
+            .window-body { padding: 16px; }
         }
     </style>
 </head>
 <body>
-    <nav>
-        <div class="container">
-            <a href="/" class="logo">Fair<span>Lens</span></a>
-            <div>
-                <a href="#pricing">Pricing</a>
-                <a href="/docs">Docs</a>
-                <a href="/api/v1/health">Status</a>
+
+<!-- ═══ Menu Bar ═══ -->
+<div class="menu-bar">
+    <span class="apple-logo">&#63743;</span>
+    <div class="menu-item">
+        <strong>FairLens</strong>
+        <div class="dropdown">
+            <a class="dropdown-item" href="#about">About FairLens</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#cdf">CDF v1.0 <span class="shortcut">&#8984;F</span></a>
+            <a class="dropdown-item" href="#pricing">Pricing <span class="shortcut">&#8984;P</span></a>
+        </div>
+    </div>
+    <div class="menu-item">
+        API
+        <div class="dropdown">
+            <a class="dropdown-item" href="/docs">Documentation <span class="shortcut">&#8984;D</span></a>
+            <a class="dropdown-item" href="/api/v1/health">Health Check</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="/api/v1/keys">Get API Key</a>
+        </div>
+    </div>
+    <div class="menu-item">
+        Compliance
+        <div class="dropdown">
+            <a class="dropdown-item" href="#compliance">NYC LL144</a>
+            <a class="dropdown-item" href="#compliance">Michigan HB 4668</a>
+            <a class="dropdown-item" href="#compliance">Colorado AI Act</a>
+        </div>
+    </div>
+</div>
+
+<div class="desktop">
+
+    <!-- ═══ Hero Window ═══ -->
+    <div class="window" id="about">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">FairLens API</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body hero-content">
+            <div class="hero-icon">&#9878;</div>
+            <h1>Community-Governed<br>AI Fairness</h1>
+            <p>
+                The first fairness API where <span class="highlight">communities set the standard</span> &mdash;
+                not the federal government, not the vendor, not a researcher in a lab.
+                Bias detection. Racial fairness auditing. Regulatory compliance.
+            </p>
+            <div class="btn-row">
+                <a href="/docs" class="mac-btn mac-btn-primary">Open Docs</a>
+                <a href="#cdf" class="mac-btn">What is CDF v1.0?</a>
+                <a href="#pricing" class="mac-btn">Pricing</a>
             </div>
         </div>
-    </nav>
+    </div>
 
-    <section class="hero">
-        <div class="container">
-            <div class="badge">Now in Public Beta</div>
-            <h1>Detect bias.<br><span class="gradient">Score fairness.</span><br>Ship responsibly.</h1>
-            <p>One API call to analyze text for gender, racial, age, and disability bias. Score datasets for statistical fairness. Built for teams shipping AI products.</p>
-            <div class="cta-row">
-                <a href="/api/v1/keys" class="btn btn-primary">Get Free API Key</a>
-                <a href="/docs" class="btn btn-secondary">Read the Docs</a>
+    <!-- ═══ CDF Window ═══ -->
+    <div class="section-label">About</div>
+    <div class="window" id="cdf">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Community-Defined Fairness (CDF v1.0)</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div class="cdf-content">
+                <div class="cdf-icon-col">
+                    <div class="cdf-icon-large">&#9881;</div>
+                </div>
+                <div class="cdf-text">
+                    <h2>Who decides what &ldquo;fair&rdquo; means?</h2>
+                    <p>
+                        Every AI system uses a fairness threshold &mdash; a number that determines
+                        when the system is &ldquo;fair enough.&rdquo; Today, that number comes from a
+                        federal regulation written in 1978 or a tech company&rsquo;s lawyers.
+                    </p>
+                    <p>
+                        <span class="highlight">CDF v1.0 replaces that number with one that comes
+                        from the community.</span> A documented, signed, provenance-tracked standard
+                        set by the people the AI system actually affects.
+                    </p>
+                    <ul class="cdf-list">
+                        <li>Communities define their own fairness threshold</li>
+                        <li>Full provenance: who decided, when, how</li>
+                        <li>Staleness tracking &mdash; standards expire and get reviewed</li>
+                        <li>Priority groups identified by the community, not assumed</li>
+                    </ul>
+                    <div class="compliance-row" id="compliance">
+                        <span class="compliance-badge">NYC LL144</span>
+                        <span class="compliance-badge">Michigan HB 4668</span>
+                        <span class="compliance-badge">Colorado AI Act</span>
+                        <span class="compliance-badge">EEOC 4/5ths</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <div class="container">
-        <div class="demo">
-            <div class="demo-header">Quick Start — cURL</div>
-            <pre><span class="cm"># Analyze text for bias</span>
-curl -X POST https://api.fairlens.dev/api/v1/analyze/text \
+    <!-- ═══ Code Demo Window ═══ -->
+    <div class="section-label">Quick Start</div>
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Terminal &mdash; Quick Start</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="code-body"><span class="cm"># Analyze text for bias</span>
+<span class="kw">curl</span> -X POST /api/v1/analyze/text \
   -H <span class="str">"X-API-Key: fl_live_your_key"</span> \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{
-    "text": "We are looking for a young, aggressive salesman...",
+    "text": "We need a young, aggressive salesman...",
     "categories": ["gender", "age"]
   }'</span>
 
@@ -235,107 +619,136 @@ curl -X POST https://api.fairlens.dev/api/v1/analyze/text \
 {
   <span class="str">"overall_score"</span>: <span class="num">34.2</span>,
   <span class="str">"bias_scores"</span>: [
-    {<span class="str">"category"</span>: <span class="str">"gender"</span>, <span class="str">"score"</span>: <span class="num">28.5</span>, <span class="str">"flagged_phrases"</span>: [<span class="str">"salesman"</span>]},
-    {<span class="str">"category"</span>: <span class="str">"age"</span>, <span class="str">"score"</span>: <span class="num">40.0</span>, <span class="str">"flagged_phrases"</span>: [<span class="str">"young"</span>]}
+    {<span class="str">"category"</span>: <span class="str">"gender"</span>, <span class="str">"score"</span>: <span class="num">28.5</span>},
+    {<span class="str">"category"</span>: <span class="str">"age"</span>, <span class="str">"score"</span>: <span class="num">40.0</span>}
   ],
   <span class="str">"recommendations"</span>: [
-    <span class="str">"Replace 'salesman' with 'salesperson' or 'sales representative'"</span>,
-    <span class="str">"Remove age-specific language like 'young'"</span>
+    <span class="str">"Replace 'salesman' with 'salesperson'"</span>,
+    <span class="str">"Remove age-specific language"</span>
   ]
-}</pre>
-        </div>
+}</div>
     </div>
 
-    <section class="features">
-        <div class="container">
-            <h2>Built for Production</h2>
+    <!-- ═══ Features Window ═══ -->
+    <div class="section-label section-label-wide">Features</div>
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Features</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="padding: 0;">
             <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">&#x1F50D;</div>
+                <div class="feature-cell">
+                    <div class="feature-icon-sm">&#9998;</div>
                     <h3>Text Bias Detection</h3>
-                    <p>Analyze job postings, marketing copy, chatbot responses, and any text for bias across 4 categories with actionable recommendations.</p>
+                    <p>181 patterns across gender, race, age, disability. Actionable suggestions for every flag.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#x1F4CA;</div>
-                    <h3>Dataset Fairness Scoring</h3>
-                    <p>Upload datasets and get disparate impact ratios, statistical parity differences, and equal opportunity metrics with group-level breakdowns.</p>
+                <div class="feature-cell">
+                    <div class="feature-icon-sm">&#9636;</div>
+                    <h3>Racial Fairness Audit</h3>
+                    <p>Disparate impact, statistical parity, racial disparity scoring with community thresholds.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#x26A1;</div>
-                    <h3>Sub-100ms Latency</h3>
-                    <p>Deterministic scoring engine — no LLM calls in the hot path. Consistent, fast responses every time.</p>
+                <div class="feature-cell">
+                    <div class="feature-icon-sm">&#9878;</div>
+                    <h3>Community Governance</h3>
+                    <p>CDF v1.0 provenance tracking. Communities set and own their fairness standard.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#x1F512;</div>
-                    <h3>SOC 2 Ready</h3>
-                    <p>API key authentication, rate limiting, audit logging. Your data is never stored unless you opt in to report saving.</p>
+                <div class="feature-cell">
+                    <div class="feature-icon-sm">&#9881;</div>
+                    <h3>Adversarial Debiasing</h3>
+                    <p>Fairlearn ExponentiatedGradient. Before/after comparison with per-group DI.</p>
                 </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#x1F9EA;</div>
-                    <h3>CI/CD Integration</h3>
-                    <p>Add fairness checks to your deployment pipeline. Block biased content before it ships. GitHub Action coming soon.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">&#x1F4C4;</div>
+                <div class="feature-cell">
+                    <div class="feature-icon-sm">&#9745;</div>
                     <h3>Compliance Reports</h3>
-                    <p>Generate PDF fairness reports for EU AI Act, NYC Local Law 144, and EEOC compliance documentation.</p>
+                    <p>LL144, Michigan HB 4668, Colorado AI Act. Regulation-specific PDF output.</p>
+                </div>
+                <div class="feature-cell">
+                    <div class="feature-icon-sm">&#9889;</div>
+                    <h3>Sub-100ms Latency</h3>
+                    <p>Deterministic scoring. No LLM in the hot path. Consistent, fast, every time.</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <section class="pricing" id="pricing">
-        <div class="container">
-            <h2>Simple, Usage-Based Pricing</h2>
-            <p class="subtitle">Start free. Scale as you grow.</p>
+    <!-- ═══ Pricing Window ═══ -->
+    <div class="section-label section-label-wide" id="pricing">Pricing</div>
+    <div class="window window-wide">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Pricing &mdash; Simple, Usage-Based</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body" style="padding: 0;">
             <div class="pricing-grid">
-                <div class="price-card">
+                <div class="price-col">
                     <h3>Free</h3>
-                    <div class="price">$0<span>/mo</span></div>
-                    <p class="desc">For evaluation and side projects</p>
+                    <div class="price-amount">$0</div>
+                    <div class="price-period">per month</div>
                     <ul>
                         <li>100 API calls / month</li>
                         <li>Text bias analysis</li>
                         <li>4 bias categories</li>
                         <li>Community support</li>
                     </ul>
-                    <a href="/api/v1/keys" class="btn btn-secondary">Start Free</a>
+                    <a href="/api/v1/keys" class="mac-btn" style="width: 80%; display: inline-block;">Start Free</a>
                 </div>
-                <div class="price-card featured">
+                <div class="price-col featured">
+                    <span class="featured-label">RECOMMENDED</span>
                     <h3>Pro</h3>
-                    <div class="price">$29<span>/mo</span></div>
-                    <p class="desc">For teams building AI products</p>
+                    <div class="price-amount">$29</div>
+                    <div class="price-period">per month</div>
                     <ul>
                         <li>10,000 API calls / month</li>
                         <li>Text + dataset analysis</li>
-                        <li>Saved reports & history</li>
+                        <li>Compliance reports</li>
+                        <li>Saved reports &amp; history</li>
                         <li>Priority support</li>
-                        <li>Webhook notifications</li>
                     </ul>
-                    <a href="/api/v1/billing/create-checkout" class="btn btn-primary">Start Pro Trial</a>
+                    <a href="/api/v1/billing/create-checkout" class="mac-btn mac-btn-primary" style="width: 80%; display: inline-block;">Start Pro</a>
                 </div>
-                <div class="price-card">
+                <div class="price-col">
                     <h3>Enterprise</h3>
-                    <div class="price">$199<span>/mo</span></div>
-                    <p class="desc">For compliance-critical orgs</p>
+                    <div class="price-amount">$199</div>
+                    <div class="price-period">per month</div>
                     <ul>
                         <li>100,000 API calls / month</li>
                         <li>All analysis types</li>
-                        <li>PDF compliance reports</li>
-                        <li>SSO & team management</li>
-                        <li>SLA & dedicated support</li>
-                        <li>Custom bias categories</li>
+                        <li>CDF v1.0 governance</li>
+                        <li>Adversarial debiasing</li>
+                        <li>Regulation-specific reports</li>
+                        <li>SLA &amp; dedicated support</li>
                     </ul>
-                    <a href="mailto:enterprise@fairlens.dev" class="btn btn-secondary">Contact Sales</a>
+                    <a href="mailto:matt@fairlens.dev" class="mac-btn" style="width: 80%; display: inline-block;">Contact</a>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <footer>
-        <div class="container">
-            FairLens API &mdash; Built in Detroit. &copy; 2026 FairLens Inc.
-        </div>
-    </footer>
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="footer-bar">
+    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    <div class="footer-links">
+        <a href="/docs">Docs</a>
+        <a href="https://github.com/MattJaxson/fairlens-api">GitHub</a>
+        <a href="/api/v1/health">Status</a>
+    </div>
+</div>
+
+<script>
+// Close dropdowns when clicking elsewhere
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.menu-item')) {
+        document.querySelectorAll('.dropdown').forEach(d => d.style.display = '');
+    }
+});
+</script>
+
 </body>
 </html>
