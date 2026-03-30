@@ -3,9 +3,11 @@
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from pathlib import Path
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -74,9 +76,12 @@ async def health_check(request: Request) -> dict:
     }
 
 
-@app.get("/", tags=["health"])
-async def root() -> dict:
-    """Root endpoint with API information."""
+@app.get("/", tags=["health"], include_in_schema=False)
+async def root():
+    """Serve the landing page."""
+    index = Path(__file__).resolve().parent.parent / "static" / "index.html"
+    if index.exists():
+        return FileResponse(index, media_type="text/html")
     return {
         "service": settings.APP_NAME,
         "version": settings.API_VERSION,
