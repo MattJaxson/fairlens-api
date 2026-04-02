@@ -7,15 +7,15 @@
     /* Semantic inversion: --black is now the light ink, --white is now the dark surface.
        Every var(--black) in HTML becomes off-white. Every var(--white) becomes obsidian.
        Zero HTML changes required for the dark-mode flip. */
-    --white:        #111114;   /* was #FFFFFF → dark surface */
+    --white:        #18181d;   /* was #FFFFFF → dark surface */
     --black:        #f4f4f5;   /* was #000000 → light ink */
-    --gray-light:   #1c1c20;   /* was #F0F0F0 → dark hover */
+    --gray-light:   #22222a;   /* was #F0F0F0 → dark hover */
     --gray:         #2e2e33;   /* was #C0C0C0 → divider */
     --gray-dark:    #6b6b72;   /* was #808080 → muted text */
     --gray-darker:  #a8a8b3;   /* was #404040 → secondary text */
     --bg:           #0a0a0c;   /* body — obsidian */
-    --window-bg:    #111114;   /* window surfaces */
-    --title-bar:    linear-gradient(180deg, #1e1e23 0%, #141418 100%);
+    --window-bg:    #18181d;   /* window surfaces — lifted off the obsidian body */
+    --title-bar:    linear-gradient(180deg, #222228 0%, #1a1a20 100%);
     --shadow:       1px 1px 0 rgba(255,255,255,0.06), 2px 2px 0 rgba(0,0,0,0.5);
     --window-shadow:0 0 0 1px rgba(255,255,255,0.08),
                     0 4px 24px rgba(0,0,0,0.6),
@@ -130,6 +130,7 @@ body::before {
 .title-bar {
     background: var(--title-bar);
     border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-left: 2px solid rgba(180,200,160,0.28);
     padding: 3px 8px;
     display: flex;
     align-items: center;
