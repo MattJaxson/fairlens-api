@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     )
 
     # Application
-    APP_NAME: str = "FairLens API"
+    APP_NAME: str = "Project Libra"
     API_VERSION: str = "v1"
     DEBUG: bool = False
 

@@ -170,7 +170,7 @@ def generate_pdf_report(audit_result: dict[str, Any]) -> bytes:
     story.append(Spacer(1, 20))
     story.append(HRFlowable(width="100%", thickness=0.5, color=MID_GREY, spaceAfter=6))
     story.append(Paragraph(
-        "FairLens API — fairlens.dev | Powered by Community-Defined Fairness Protocol v1.0",
+        "Project Libra — Powered by Community-Defined Fairness Protocol v1.0",
         small_style,
     ))
 

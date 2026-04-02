@@ -1,4 +1,4 @@
-"""FairLens API - AI-powered bias detection and fairness scoring service."""
+"""Project Libra — Community-governed fairness pipeline with cryptographic provenance."""
 
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
@@ -44,8 +44,8 @@ app = FastAPI(
     title=settings.APP_NAME,
     version=settings.API_VERSION,
     description=(
-        "AI-powered bias detection and fairness scoring API. "
-        "Analyze text for biased language and datasets for outcome disparities."
+        "Community-governed fairness pipeline with cryptographic provenance. "
+        "Deterministic bias detection, racial fairness auditing, and CDF v1.0 governance."
     ),
     lifespan=lifespan,
 )

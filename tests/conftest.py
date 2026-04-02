@@ -1,5 +1,5 @@
 """
-Shared fixtures for FairLens API tests.
+Shared fixtures for Project Libra tests.
 Uses an in-memory SQLite database so tests are fast and isolated.
 """
 
@@ -57,7 +57,7 @@ async def db_session():
 @pytest_asyncio.fixture
 async def test_user(db_session: AsyncSession):
     """Create a free-tier test user."""
-    user = User(email="test@fairlens.dev", tier="free")
+    user = User(email="test@projectlibra.dev", tier="free")
     db_session.add(user)
     await db_session.commit()
     await db_session.refresh(user)

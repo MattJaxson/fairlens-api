@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Documentation — FairLens API</title>
-    <meta name="description" content="FairLens API documentation — bias detection, fairness auditing, community governance, compliance reports, and billing endpoints.">
+    <title>API Documentation — Project Libra</title>
+    <meta name="description" content="Project Libra API documentation — deterministic bias detection, community-governed fairness pipeline, cryptographic provenance, compliance reports.">
     <link rel="stylesheet" href="/static/css/system7.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
 <div class="menu-bar">
     <span class="apple-logo">&#9878;</span>
     <div class="menu-item">
-        <strong>FairLens</strong>
+        <strong>Libra</strong>
         <div class="dropdown">
             <a class="dropdown-item" href="/">Home</a>
             <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
@@ -43,7 +43,7 @@
 <div class="desktop">
 
     <!-- ═══ Overview Window ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -53,7 +53,7 @@
         <div class="window-body">
             <div style="display: flex; align-items: flex-start; gap: 16px;">
                 <div>
-                    <h2 style="font-size: 17px; font-weight: 500; margin-bottom: 8px;">FairLens API v1<span class="sprite-cursor" style="margin-left: 4px;"></span></h2>
+                    <h2 style="font-size: 17px; font-weight: 500; margin-bottom: 8px;">Project Libra API v1<span class="sprite-cursor" style="margin-left: 4px;"></span></h2>
                     <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6; margin-bottom: 12px;">
                         Base URL: <code style="font-family: 'DM Mono', monospace; background: var(--gray-light); padding: 2px 6px; border: 1px solid var(--gray);">https://modest-serenity-production-b7b9.up.railway.app</code>
                     </p>
@@ -71,7 +71,7 @@
     </div>
 
     <!-- ═══ Analysis Endpoints ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -128,7 +128,7 @@
     </div>
 
     <!-- ═══ Fairness Endpoints ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -191,7 +191,7 @@
     </div>
 
     <!-- ═══ Compliance Endpoints ═══ -->
-    <div class="window window-wide" id="compliance">
+    <div class="window" id="compliance">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -239,7 +239,7 @@ curl -X POST /api/v1/fairness/audit/compliance/ll144 \
     </div>
 
     <!-- ═══ Community Governance Endpoints ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -273,8 +273,117 @@ curl -X POST /api/v1/fairness/audit/compliance/ll144 \
         </div>
     </div>
 
+    <!-- ═══ Cryptographic Provenance Ledger ═══ -->
+    <div class="window" id="cpl">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Cryptographic Provenance Ledger (CPL)</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="font-size: 13px; color: var(--gray-darker); line-height: 1.7; margin-bottom: 16px;">
+                <p style="margin-bottom: 12px;">
+                    Every community fairness standard created through CDF v1.0 is entered into the
+                    <strong>Cryptographic Provenance Ledger</strong> &mdash; a SHA-256 hash chain that makes the
+                    entire audit trail tamper-evident.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    When a <code style="font-family: 'DM Mono', monospace; background: var(--gray-light); padding: 2px 6px; border: 1px solid var(--gray);">CommunityConfig</code>
+                    is created, Libra computes a SHA-256 hash of its contents and links it to the previous
+                    config&rsquo;s hash. This forms an append-only chain: if any historical record is modified,
+                    every subsequent hash breaks. Regulatory reports include the hash for independent verification.
+                </p>
+                <p>
+                    <strong>For compliance officers:</strong> The CPL proves your fairness standard wasn&rsquo;t
+                    modified after the fact. Present the hash at audit. Regulators can independently verify
+                    the chain without access to your data.
+                </p>
+            </div>
+
+            <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">HOW IT WORKS</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div style="border: 2px solid var(--black); padding: 12px; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 4px;">1</div>
+                    <div style="font-size: 11px;">Community sets standard via <code style="font-size: 10px;">POST /config</code></div>
+                </div>
+                <div style="border: 2px solid var(--black); padding: 12px; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 4px;">2</div>
+                    <div style="font-size: 11px;">Libra computes SHA-256 hash &amp; chains to predecessor</div>
+                </div>
+                <div style="border: 2px solid var(--black); padding: 12px; text-align: center;">
+                    <div style="font-size: 20px; margin-bottom: 4px;">3</div>
+                    <div style="font-size: 11px;">Hash included in all compliance reports for verification</div>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/community/config</span>
+                <span class="endpoint-tier">Enterprise</span>
+                <div class="endpoint-desc">Creates config and enters it into the provenance ledger with SHA-256 hash chain.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ Q2Q Translation Matrix ═══ -->
+    <div class="window" id="q2q">
+        <div class="title-bar">
+            <div class="close-box"></div>
+            <div class="title-bar-lines title-bar-lines-left"></div>
+            <span class="title-text">Q2Q Translation Matrix</span>
+            <div class="title-bar-lines"></div>
+        </div>
+        <div class="window-body">
+            <div style="font-size: 13px; color: var(--gray-darker); line-height: 1.7; margin-bottom: 16px;">
+                <p style="margin-bottom: 12px;">
+                    The <strong>Qualitative-to-Quantitative Translation Matrix</strong> documents exactly how
+                    community input maps to fairness parameters. When residents say &ldquo;We want equitable
+                    lending outcomes,&rdquo; the Q2Q records how that becomes
+                    <code style="font-family: 'DM Mono', monospace; background: var(--gray-light); padding: 2px 6px; border: 1px solid var(--gray);">&theta;=0.85, priority_groups=["Black", "Latinx"]</code>.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    Every parameter in a community fairness standard is traceable through the Q2Q back to
+                    the community&rsquo;s own words. The matrix is stored in config provenance and surfaced
+                    in compliance reports.
+                </p>
+                <p>
+                    <strong>For compliance officers:</strong> The Q2Q closes the gap regulators care about most
+                    &mdash; proving your fairness threshold wasn&rsquo;t arbitrary. It documents the deliberative
+                    process that produced each quantitative parameter.
+                </p>
+            </div>
+
+            <div style="font-size: 11px; color: var(--gray-dark); margin-bottom: 8px;">TRANSLATION EXAMPLE</div>
+            <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; margin-bottom: 16px;">
+                <div style="border: 2px solid var(--black); padding: 12px; background: var(--gray-light);">
+                    <div style="font-size: 10px; color: var(--gray-dark); margin-bottom: 4px;">QUALITATIVE INPUT</div>
+                    <div style="font-size: 12px;">&ldquo;80% isn&rsquo;t good enough for our community. We want at least 90% parity.&rdquo;</div>
+                </div>
+                <div style="font-size: 20px; padding: 0 4px;">&rarr;</div>
+                <div style="border: 2px solid var(--black); padding: 12px; background: var(--gray-light);">
+                    <div style="font-size: 10px; color: var(--gray-dark); margin-bottom: 4px;">QUANTITATIVE PARAMETER</div>
+                    <div style="font-family: 'DM Mono', monospace; font-size: 12px;">threshold: 0.90<br>metric: disparate_impact</div>
+                </div>
+            </div>
+
+            <div class="endpoint-card">
+                <span class="endpoint-method post">POST</span>
+                <span class="endpoint-path">/api/v1/fairness/community/config</span>
+                <span class="endpoint-tier">Enterprise</span>
+                <div class="endpoint-desc">Q2Q mappings are stored in the config provenance alongside the community standard.</div>
+            </div>
+            <div class="endpoint-card">
+                <span class="endpoint-method get">GET</span>
+                <span class="endpoint-path">/api/v1/fairness/community/config</span>
+                <span class="endpoint-tier">Pro+</span>
+                <div class="endpoint-desc">Retrieve the active config including its Q2Q translation mappings.</div>
+            </div>
+        </div>
+    </div>
+
     <!-- ═══ Keys & Billing ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -341,7 +450,7 @@ curl -X POST /api/v1/fairness/audit/compliance/ll144 \
 
 <!-- ═══ Footer ═══ -->
 <div class="footer-bar">
-    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    Project Libra &mdash; Built in Detroit &mdash; &copy; 2026
     <div class="footer-links">
         <a href="/api-docs">Docs</a>
         <a href="/demo">Demo</a>

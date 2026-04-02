@@ -1,4 +1,4 @@
-/* FairLens — API helpers + page view tracking */
+/* Project Libra — API helpers + page view tracking */
 
 const API = window.location.origin;
 

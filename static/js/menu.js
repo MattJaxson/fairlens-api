@@ -1,4 +1,4 @@
-/* FairLens — Shared menu bar logic */
+/* Project Libra — Shared menu bar logic */
 
 // Close dropdowns when clicking outside
 document.addEventListener('click', (e) => {

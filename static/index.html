@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FairLens API — Community-Governed AI Fairness</title>
-    <meta name="description" content="The first AI fairness API where communities set the standard. Bias detection, racial fairness auditing, LL144 compliance. Built in Detroit.">
+    <title>Project Libra — Community-Governed AI Fairness</title>
+    <meta name="description" content="The first fairness pipeline with cryptographically verifiable community governance. Deterministic bias detection, racial fairness auditing, LL144 compliance. Built in Detroit.">
     <link rel="stylesheet" href="/static/css/system7.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
 <div class="menu-bar">
     <span class="apple-logo">&#9878;</span>
     <div class="menu-item">
-        <strong>FairLens</strong>
+        <strong>Libra</strong>
         <div class="dropdown">
             <a class="dropdown-item" href="/">Home</a>
             <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
@@ -62,7 +62,7 @@
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
-            <span class="title-text">FairLens API</span>
+            <span class="title-text">Project Libra</span>
             <div class="title-bar-lines"></div>
         </div>
         <div class="window-body hero-content">
@@ -77,9 +77,9 @@
             </div>
             <h1>Community-Governed<br>AI Fairness</h1>
             <p>
-                The first fairness API where <span class="highlight">communities set the standard</span> &mdash;
-                not the federal government, not the vendor, not a researcher in a lab.
-                Bias detection. Racial fairness auditing. Regulatory compliance.
+                The first fairness pipeline with <span class="highlight">cryptographically verifiable community governance</span>.
+                Deterministic bias detection. Racial fairness auditing. Regulatory compliance.
+                Every threshold traceable to the community that set it.
             </p>
             <div class="btn-row">
                 <a href="/demo" class="mac-btn mac-btn-primary">Try Live Demo</a>
@@ -104,16 +104,17 @@
                     <p>
                         Every AI system uses a fairness threshold &mdash; a number that determines
                         when the system is &ldquo;fair enough.&rdquo; Today, that number comes from a
-                        federal regulation written in 1978 or a tech company&rsquo;s lawyers.
+                        federal regulation written in 1978 or a vendor&rsquo;s legal team.
                     </p>
                     <p>
                         <span class="highlight">CDF v1.0 replaces that number with one that comes
-                        from the community.</span> A documented, signed, provenance-tracked standard
-                        set by the people the AI system actually affects.
+                        from the community.</span> Documented, SHA-256 hash-chained, and tamper-evident
+                        &mdash; set by the people the AI system actually affects.
                     </p>
                     <ul class="cdf-list">
-                        <li>Communities define their own fairness threshold</li>
-                        <li>Full provenance: who decided, when, how</li>
+                        <li>Communities define their own fairness threshold (&theta;)</li>
+                        <li>Cryptographic Provenance Ledger &mdash; every decision hash-chained</li>
+                        <li>Q2Q Translation Matrix &mdash; qualitative input &rarr; quantitative parameters</li>
                         <li>Staleness tracking &mdash; standards expire and get reviewed</li>
                         <li>Priority groups identified by the community, not assumed</li>
                     </ul>
@@ -121,10 +122,10 @@
                         <a href="/community" class="mac-btn">Read the Full Story &rarr;</a>
                     </div>
                     <div class="compliance-row" id="compliance">
-                        <span class="compliance-badge">NYC LL144</span>
-                        <span class="compliance-badge">Michigan HB 4668</span>
-                        <span class="compliance-badge">Colorado AI Act</span>
-                        <span class="compliance-badge">EEOC 4/5ths</span>
+                        <a href="/api-docs#compliance" class="compliance-badge">NYC LL144</a>
+                        <a href="/api-docs#compliance" class="compliance-badge">Michigan HB 4668</a>
+                        <a href="/api-docs#compliance" class="compliance-badge">Colorado AI Act</a>
+                        <a href="/api-docs#compliance" class="compliance-badge">EEOC 4/5ths</a>
                     </div>
                 </div>
             </div>
@@ -163,7 +164,7 @@
     </div>
 
     <!-- ═══ Features Window ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -172,36 +173,36 @@
         </div>
         <div class="window-body" style="padding: 0;">
             <div class="feature-grid">
-                <div class="feature-cell">
+                <a href="/demo" class="feature-cell">
                     <div class="feature-header"><div class="feature-icon-sm">Aa</div><h3>Text Bias Detection</h3></div>
                     <p>181 patterns across gender, race, age, disability. Actionable suggestions for every flag.</p>
-                </div>
-                <div class="feature-cell">
+                </a>
+                <a href="/api-docs" class="feature-cell">
                     <div class="feature-header"><div class="feature-icon-sm">DI</div><h3>Racial Fairness Audit</h3></div>
                     <p>Disparate impact, statistical parity, racial disparity scoring with community thresholds.</p>
-                </div>
-                <div class="feature-cell">
+                </a>
+                <a href="/community" class="feature-cell">
                     <div class="feature-header"><div class="feature-icon-sm">&#9878;</div><h3>Community Governance</h3></div>
                     <p>CDF v1.0 provenance tracking. Communities set and own their fairness standard.</p>
-                </div>
-                <div class="feature-cell">
+                </a>
+                <a href="/api-docs" class="feature-cell">
                     <div class="feature-header"><div class="feature-icon-sm">ML</div><h3>Adversarial Debiasing</h3></div>
                     <p>Fairlearn ExponentiatedGradient. Before/after comparison with per-group DI.</p>
-                </div>
-                <div class="feature-cell">
+                </a>
+                <a href="/api-docs#compliance" class="feature-cell">
                     <div class="feature-header"><div class="feature-icon-sm">LL</div><h3>Compliance Reports</h3></div>
                     <p>LL144, Michigan HB 4668, Colorado AI Act. Regulation-specific PDF output.</p>
-                </div>
-                <div class="feature-cell">
+                </a>
+                <a href="/dashboard" class="feature-cell">
                     <div class="feature-header"><div class="feature-icon-sm">&lt;1s</div><h3>Sub-100ms Latency</h3></div>
                     <p>Deterministic scoring. No LLM in the hot path. Consistent, fast, every time.</p>
-                </div>
+                </a>
             </div>
         </div>
     </div>
 
     <!-- ═══ Pricing Window ═══ -->
-    <div class="window window-wide" id="pricing">
+    <div class="window" id="pricing">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -220,7 +221,7 @@
                         <li>4 bias categories</li>
                         <li>Community support</li>
                     </ul>
-                    <a href="/register" class="mac-btn" style="width: 80%; display: inline-block;">Start Free</a>
+                    <a href="/register" class="mac-btn">Start Free</a>
                 </div>
                 <div class="price-col featured">
                     <span class="featured-label">RECOMMENDED</span>
@@ -234,7 +235,7 @@
                         <li>Saved reports &amp; history</li>
                         <li>Priority support</li>
                     </ul>
-                    <a href="/register" class="mac-btn mac-btn-primary" style="width: 80%; display: inline-block;">Start Pro</a>
+                    <a href="/register" class="mac-btn mac-btn-primary">Start Pro</a>
                 </div>
                 <div class="price-col">
                     <h3>Enterprise</h3>
@@ -248,7 +249,7 @@
                         <li>Regulation-specific reports</li>
                         <li>SLA &amp; dedicated support</li>
                     </ul>
-                    <a href="mailto:matt@fairlens.dev" class="mac-btn" style="width: 80%; display: inline-block;">Contact</a>
+                    <a href="/register" class="mac-btn">Contact Sales</a>
                 </div>
             </div>
         </div>
@@ -258,7 +259,7 @@
 
 <!-- ═══ Footer ═══ -->
 <div class="footer-bar">
-    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    Project Libra &mdash; Built in Detroit &mdash; &copy; 2026
     <div class="footer-links">
         <a href="/api-docs">Docs</a>
         <a href="/demo">Demo</a>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Demo — FairLens API</title>
-    <meta name="description" content="Try FairLens bias detection live. Type or paste text and see real-time bias analysis — no API key required.">
+    <title>Live Demo — Project Libra</title>
+    <meta name="description" content="Try Libra's deterministic bias detection live. Type or paste text and see real-time analysis — no API key required.">
     <link rel="stylesheet" href="/static/css/system7.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
 <div class="menu-bar">
     <span class="apple-logo">&#9878;</span>
     <div class="menu-item">
-        <strong>FairLens</strong>
+        <strong>Libra</strong>
         <div class="dropdown">
             <a class="dropdown-item" href="/">Home</a>
             <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
@@ -43,7 +43,7 @@
 <div class="desktop">
 
     <!-- ═══ Demo Input Window ═══ -->
-    <div class="window window-wide">
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -60,7 +60,7 @@
                 <div>
                     <p style="font-size: 13px; margin-bottom: 4px;">
                         <strong>Paste any text</strong> &mdash; job posting, policy document, marketing copy &mdash; and
-                        FairLens will scan it for biased language across 4 categories.
+                        Libra will scan it for biased language across 4 categories.
                     </p>
                     <p style="font-size: 11px; color: var(--gray-dark);">
                         500 character limit &bull; 5 analyses per minute &bull; No API key required
@@ -79,7 +79,7 @@
     </div>
 
     <!-- ═══ Loading State ═══ -->
-    <div id="demo-loading" class="window window-wide" style="display: none;">
+    <div id="demo-loading" class="window" style="display: none;">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -100,7 +100,7 @@
     </div>
 
     <!-- ═══ Results Window ═══ -->
-    <div id="demo-results" class="window window-wide" style="display: none;">
+    <div id="demo-results" class="window" style="display: none;">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -154,7 +154,7 @@
 
 <!-- ═══ Footer ═══ -->
 <div class="footer-bar">
-    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    Project Libra &mdash; Built in Detroit &mdash; &copy; 2026
     <div class="footer-links">
         <a href="/api-docs">Docs</a>
         <a href="/demo">Demo</a>

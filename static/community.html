@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community-Defined Fairness — FairLens API</title>
-    <meta name="description" content="CDF v1.0 — the first framework where communities set their own AI fairness standards. Built in Detroit. Piloting in District 3.">
+    <title>Community-Defined Fairness — Project Libra</title>
+    <meta name="description" content="CDF v1.0 — the first framework where communities set their own AI fairness standards with cryptographic provenance. Built in Detroit.">
     <link rel="stylesheet" href="/static/css/system7.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
 <div class="menu-bar">
     <span class="apple-logo">&#9878;</span>
     <div class="menu-item">
-        <strong>FairLens</strong>
+        <strong>Libra</strong>
         <div class="dropdown">
             <a class="dropdown-item" href="/">Home</a>
             <a class="dropdown-item" href="/community">About CDF <span class="shortcut">&#8984;F</span></a>
@@ -42,16 +42,16 @@
 
 <div class="desktop">
 
-    <!-- ═══ Hero Window ═══ -->
-    <div class="window window-wide">
+    <!-- ═══ Mission Statement Window ═══ -->
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
             <span class="title-text">Community-Defined Fairness (CDF v1.0)</span>
             <div class="title-bar-lines"></div>
         </div>
-        <div class="window-body" style="text-align: center; padding: 32px 24px;">
-            <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+        <div class="window-body" style="padding: 32px 28px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
                 <div class="sprite-people" style="width: 160px;">
                     <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
                     <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
@@ -60,13 +60,40 @@
                     <div class="pixel-person"><div class="head"></div><div class="body-part"></div><div class="legs"><div class="leg-l"></div><div class="leg-r"></div></div></div>
                 </div>
             </div>
-            <h1 style="font-size: 24px; font-weight: 500; margin-bottom: 12px; line-height: 1.2;">
-                Who decides what &ldquo;fair&rdquo; means?
-            </h1>
-            <p style="font-size: 13px; color: var(--gray-darker); max-width: 520px; margin: 0 auto; line-height: 1.7;">
-                Every AI system uses a fairness threshold &mdash; a number that determines when the system
-                is &ldquo;fair enough.&rdquo; Today, that number comes from a federal regulation written in 1978,
-                a tech vendor&rsquo;s lawyers, or nobody at all. <strong>No one asks the community.</strong>
+
+            <p style="font-size: 14px; color: var(--gray-darker); line-height: 1.8; margin-bottom: 20px;">
+                AI fairness research has produced at least 21 competing mathematical definitions of fairness
+                (Verma &amp; Rubin, 2018). They are provably mutually exclusive &mdash; no algorithm can satisfy
+                calibration, equalized odds, and statistical parity simultaneously (Chouldechova, 2017;
+                Kleinberg et al., 2016). The field has spent a decade stuck in a theoretical loop because
+                it treats fairness as a <em>mathematical property to be optimized</em> rather than a
+                <strong>social contract to be negotiated</strong>. The threshold that determines whether
+                an AI system is &ldquo;fair enough&rdquo; still comes from a federal regulation written in
+                1978 or a vendor&rsquo;s legal team. No one asks the community.
+            </p>
+
+            <p style="font-size: 14px; color: var(--gray-darker); line-height: 1.8; margin-bottom: 20px;">
+                Project Libra resolves this impasse by moving the locus of fairness definition from the
+                researcher&rsquo;s desk to the community table. CDF v1.0 does not pick a mathematical
+                definition &mdash; it asks the affected community to set the threshold (&theta;) that
+                determines when disparate impact is unacceptable <em>to them</em>. This is adversarial
+                debiasing with democratic input: Fairlearn&rsquo;s ExponentiatedGradient constrained by
+                community-sourced parameters, not corporate defaults. Every decision enters the
+                <strong>Cryptographic Provenance Ledger</strong> &mdash; SHA-256 hash-chained and
+                tamper-evident. Every community conversation is translated into quantitative parameters
+                through the <strong>Q2Q Translation Matrix</strong>, closing the gap between what people
+                say and what the algorithm enforces.
+            </p>
+
+            <p style="font-size: 14px; color: var(--gray-darker); line-height: 1.8;">
+                If artificial general intelligence emerges from systems trained on human-generated data
+                and human-defined objectives, then the quality of that emergence depends on whether we
+                built the governance infrastructure <em>before</em> the capability arrived. Libra is that
+                infrastructure &mdash; a protocol for encoding collective human values into the mathematical
+                constraints that bound AI behavior. Not top-down corporate ethics. Not regulatory minimums.
+                Localized, documented, cryptographically proven community consensus. We are building the
+                governance layer that benevolent AI requires &mdash; one community session at a time,
+                one signed standard at a time, one provenance record at a time.
             </p>
         </div>
     </div>
@@ -94,8 +121,9 @@
                     <div class="timeline-dot"></div>
                     <div class="timeline-year">2018</div>
                     <div class="timeline-desc">
-                        <strong>AI fairness research explodes.</strong> Researchers propose dozens of mathematical
-                        fairness definitions. None of them ask the affected community what &ldquo;fair&rdquo; means to them.
+                        <strong>The impossibility results.</strong> Chouldechova and Kleinberg et al. prove
+                        that competing fairness definitions are mathematically incompatible. The field fragments.
+                        Researchers propose definitions. None of them ask the affected community which one matters.
                     </div>
                 </div>
                 <div class="timeline-item">
@@ -111,17 +139,18 @@
                     <div class="timeline-dot active"></div>
                     <div class="timeline-year">2026</div>
                     <div class="timeline-desc">
-                        <strong>CDF v1.0.</strong> Community-Defined Fairness. For the first time, the people
-                        an AI system affects set the fairness standard themselves &mdash; documented, signed,
-                        with full provenance.
+                        <strong>CDF v1.0 + Cryptographic Provenance Ledger.</strong> Project Libra launches
+                        the first cryptographically verifiable community fairness standard. Every threshold
+                        decision is SHA-256 hash-chained with full audit trail. The Q2Q Translation Matrix
+                        documents exactly how community deliberation becomes quantitative parameters.
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══ How It Works Window ═══ -->
-    <div class="window window-wide">
+    <!-- ═══ How a Community Session Works ═══ -->
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -148,13 +177,13 @@
                 <div class="session-step">
                     <div class="step-number">4</div>
                     <h4>Sign &amp; Document</h4>
-                    <p>The standard is documented with full provenance and signed by participants. 20 min.</p>
+                    <p>The standard is documented with full provenance, hash-chained, and signed. 20 min.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══ What CDF Tracks Window ═══ -->
+    <!-- ═══ What CDF v1.0 Records ═══ -->
     <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
@@ -171,6 +200,7 @@
                         <li>Priority groups identified by the community</li>
                         <li>Definition of &ldquo;favorable outcome&rdquo;</li>
                         <li>Acceptable metric (DI ratio, statistical parity, etc.)</li>
+                        <li>Q2Q Translation Matrix &mdash; documented mapping from community deliberation to quantitative parameters</li>
                     </ul>
                 </div>
                 <div>
@@ -182,14 +212,15 @@
                         <li>Facilitator</li>
                         <li>Location</li>
                         <li>Expiry date (24-month staleness window)</li>
+                        <li>Cryptographic hash (SHA-256) &mdash; tamper-evident chain linking each decision to its predecessor</li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══ District 3 Window ═══ -->
-    <div class="window window-wide">
+    <!-- ═══ District 3 Pilot ═══ -->
+    <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
@@ -217,21 +248,22 @@
                         recognition has documented failure rates with Black American English.
                     </p>
                     <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6; margin-bottom: 12px;">
-                        CDF v1.0&rsquo;s first pilot puts 10&ndash;15 District 3 residents in a room to set the fairness
+                        Libra&rsquo;s first pilot puts 10&ndash;15 District 3 residents in a room to set the fairness
                         standard for Emily. Not the vendor&rsquo;s lawyers. Not a federal regulation from 1978.
                         The people Emily actually serves.
                     </p>
                     <p style="font-size: 13px; color: var(--gray-darker); line-height: 1.6;">
                         The result: a signed <strong>District 3 Community Fairness Standard</strong> &mdash; one page,
-                        full provenance, presentable at city council, and enforceable against the vendor.
-                        Six-month review built in.
+                        full cryptographic provenance, presentable at city council, and enforceable against the vendor.
+                        Six-month review built in. Every parameter traceable through the Q2Q Translation Matrix
+                        back to the community&rsquo;s own words.
                     </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ═══ Why This Matters Window ═══ -->
+    <!-- ═══ Why This Matters ═══ -->
     <div class="window">
         <div class="title-bar">
             <div class="close-box"></div>
@@ -242,18 +274,23 @@
         <div class="window-body">
             <div style="font-size: 13px; color: var(--gray-darker); line-height: 1.7;">
                 <p style="margin-bottom: 12px;">
-                    <strong>The UMich survey found</strong> Detroiters are skeptical about AI fairness.
-                    CDF addresses that skepticism with action, not promises.
+                    <strong>The impossibility theorems are not a dead end &mdash; they are an invitation.</strong>
+                    If no single mathematical definition of fairness can satisfy all desiderata simultaneously,
+                    then the choice of which definition to prioritize is inherently a <em>value judgment</em>.
+                    Value judgments belong to the people affected, not to the engineers who built the system.
                 </p>
                 <p style="margin-bottom: 12px;">
                     <strong>Regulation is necessary but insufficient.</strong> NYC LL144 requires audits but
                     lets vendors pick the threshold. Colorado requires impact assessments but doesn&rsquo;t
-                    specify who defines &ldquo;acceptable.&rdquo; CDF fills the gap between compliance and accountability.
+                    specify who defines &ldquo;acceptable.&rdquo; CDF fills the gap between compliance and accountability
+                    with cryptographic proof that the standard came from the community, not a boardroom.
                 </p>
                 <p>
-                    <strong>Fairness is not a number you look up.</strong> It&rsquo;s a conversation you have with
-                    the people affected. CDF v1.0 is the infrastructure for that conversation &mdash; documented,
-                    tracked, and built to last.
+                    <strong>We are building the governance layer that benevolent AI requires.</strong>
+                    If we want AI systems that serve humanity broadly and equitably, we cannot wait until
+                    the capability arrives to build the governance. The infrastructure for encoding collective
+                    human values into machine constraints must exist <em>first</em>. Libra is that infrastructure &mdash;
+                    localized, documented, cryptographically proven, and owned by the communities it serves.
                 </p>
             </div>
 
@@ -261,7 +298,7 @@
                 <div class="btn-row">
                     <a href="/demo" class="mac-btn mac-btn-primary">Try the API</a>
                     <a href="/register" class="mac-btn">Get Started</a>
-                    <a href="/api-docs#compliance" class="mac-btn">Compliance Docs</a>
+                    <a href="/api-docs#cpl" class="mac-btn">Provenance Ledger</a>
                 </div>
             </div>
         </div>
@@ -271,7 +308,7 @@
 
 <!-- ═══ Footer ═══ -->
 <div class="footer-bar">
-    FairLens API &mdash; Built in Detroit &mdash; &copy; 2026
+    Project Libra &mdash; Built in Detroit &mdash; &copy; 2026
     <div class="footer-links">
         <a href="/api-docs">Docs</a>
         <a href="/demo">Demo</a>
