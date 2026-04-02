@@ -77,7 +77,7 @@ class CommunityConfig(Base):
     __tablename__ = "community_configs"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     config_json = Column(Text, nullable=False)
     record_id = Column(String(64), unique=True, nullable=False, index=True)
     is_active = Column(Boolean, default=True)
@@ -99,7 +99,7 @@ class ProvenanceLedger(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     entry_hash = Column(String(64), unique=True, nullable=False, index=True)
     prev_hash = Column(String(64), nullable=True)  # None for genesis entry
-    community_config_id = Column(Integer, ForeignKey("community_configs.id"), nullable=False)
+    community_config_id = Column(Integer, ForeignKey("community_configs.id"), nullable=False, index=True)
 
     # ── Anonymous session demographics (aggregated, NO PII) ──
     council_label = Column(String(128), nullable=False)          # e.g. "Council 4A"

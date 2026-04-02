@@ -2,12 +2,18 @@
 Adversarial Fairness Pipeline
 -------------------------------
 Fairlearn ExponentiatedGradient debiasing with pre/post comparison.
+
+Includes Convergence Failsafe: when a community-derived ε is too strict
+for the data geometry, the pipeline automatically relaxes ε in 0.01
+increments until convergence, and returns a compromise_receipt documenting
+the deviation from the community's ideal.
 """
 
 from __future__ import annotations
 
 import logging
-from typing import Any
+from dataclasses import dataclass
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -17,6 +23,28 @@ from sklearn.metrics import classification_report
 from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
+
+# ── Convergence Failsafe constants ───────────────────────────────────────
+# The relaxation ceiling is the EEOC 4/5ths rule (ε=0.20). Relaxing beyond
+# the loosest legally grounded threshold means the data cannot support *any*
+# meaningful fairness constraint — that is a data problem, not a tuning one.
+RELAXATION_STEP: float = 0.01
+RELAXATION_CEILING: float = 0.20
+
+
+@dataclass
+class CompromiseReceipt:
+    """
+    Documents the exact deviation between community intent and mathematical
+    reality when ExponentiatedGradient cannot converge at the requested ε.
+    """
+    compromised: bool
+    community_epsilon: float
+    converged_epsilon: float
+    relaxation_steps: int
+    total_relaxation: float
+    ceiling_hit: bool
+    detail: str
 
 
 def adversarial_fairness_pipeline(
@@ -82,24 +110,95 @@ def adversarial_fairness_pipeline(
     baseline_group_rates = _group_positive_rates(y_pred_baseline, s_raw_test)
     baseline_di = _disparate_impact_from_rates(baseline_group_rates)
 
-    # ── Dynamic constraint injection ──
-    # Build the Fairlearn constraint with community-derived ε when available.
-    # When ε is None, use the unconstrained default (no difference_bound kwarg).
-    constraint_kwargs: dict = {}
-    if epsilon is not None:
-        constraint_kwargs["difference_bound"] = epsilon
-
-    if constraint == "demographic_parity":
-        fairness_constraint = DemographicParity(**constraint_kwargs)
-    elif constraint == "equalized_odds":
-        fairness_constraint = EqualizedOdds(**constraint_kwargs)
-    else:
+    # ── Dynamic constraint injection with Convergence Failsafe ──
+    if constraint not in ("demographic_parity", "equalized_odds"):
         raise ValueError(f"Unsupported constraint: {constraint}")
 
-    estimator = LogisticRegression(solver="liblinear", random_state=random_state, max_iter=500)
-    mitigator = ExponentiatedGradient(estimator, constraints=fairness_constraint)
-    mitigator.fit(X_train, y_train, sensitive_features=s_train)
-    y_pred_mitigated = mitigator.predict(X_test)
+    def _build_constraint(ctype: str, eps: Optional[float]):
+        kwargs: dict = {}
+        if eps is not None:
+            kwargs["difference_bound"] = eps
+        if ctype == "demographic_parity":
+            return DemographicParity(**kwargs)
+        return EqualizedOdds(**kwargs)
+
+    compromise: Optional[CompromiseReceipt] = None
+    community_epsilon = epsilon  # preserve the community's original intent
+
+    # Attempt fit at the community-derived ε, relax on failure
+    current_eps = epsilon
+    relaxation_steps = 0
+    converged = False
+
+    while not converged:
+        fairness_constraint = _build_constraint(constraint, current_eps)
+        estimator = LogisticRegression(
+            solver="liblinear", random_state=random_state, max_iter=500,
+        )
+        mitigator = ExponentiatedGradient(
+            estimator, constraints=fairness_constraint,
+        )
+        try:
+            mitigator.fit(X_train, y_train, sensitive_features=s_train)
+            y_pred_mitigated = mitigator.predict(X_test)
+            converged = True
+        except Exception as exc:
+            if current_eps is None:
+                # No ε was set at all — nothing to relax, propagate error
+                raise
+            next_eps = round(current_eps + RELAXATION_STEP, 6)
+            relaxation_steps += 1
+            logger.warning(
+                "Convergence failed at ε=%.4f (%s): %s. "
+                "Relaxing to ε=%.4f (step %d).",
+                current_eps, type(exc).__name__, exc,
+                next_eps, relaxation_steps,
+            )
+            if next_eps > RELAXATION_CEILING:
+                # Hit the ceiling — one last attempt at the ceiling value
+                current_eps = RELAXATION_CEILING
+                fairness_constraint = _build_constraint(constraint, current_eps)
+                estimator = LogisticRegression(
+                    solver="liblinear", random_state=random_state, max_iter=500,
+                )
+                mitigator = ExponentiatedGradient(
+                    estimator, constraints=fairness_constraint,
+                )
+                try:
+                    mitigator.fit(X_train, y_train, sensitive_features=s_train)
+                    y_pred_mitigated = mitigator.predict(X_test)
+                    converged = True
+                    relaxation_steps += 1
+                except Exception:
+                    raise ValueError(
+                        f"Convergence Failsafe exhausted: model cannot converge "
+                        f"even at EEOC ceiling ε={RELAXATION_CEILING}. "
+                        f"Original community ε={community_epsilon}. "
+                        f"This indicates a data geometry problem — review the "
+                        f"dataset for insufficient group representation or "
+                        f"degenerate feature distributions."
+                    ) from exc
+            else:
+                current_eps = next_eps
+
+    # Build compromise receipt if relaxation occurred
+    if community_epsilon is not None and current_eps != community_epsilon:
+        total_relaxation = round(current_eps - community_epsilon, 6)
+        compromise = CompromiseReceipt(
+            compromised=True,
+            community_epsilon=community_epsilon,
+            converged_epsilon=current_eps,
+            relaxation_steps=relaxation_steps,
+            total_relaxation=total_relaxation,
+            ceiling_hit=current_eps >= RELAXATION_CEILING,
+            detail=(
+                f"The community's ideal ε={community_epsilon:.4f} was too strict "
+                f"for this dataset. The model required {relaxation_steps} relaxation "
+                f"step(s) of {RELAXATION_STEP} to converge at ε={current_eps:.4f}. "
+                f"Total deviation: +{total_relaxation:.4f}. "
+                f"{'EEOC ceiling reached — maximum legally grounded relaxation applied.' if current_eps >= RELAXATION_CEILING else 'Convergence achieved within community-acceptable range.'}"
+            ),
+        )
 
     mitigated_report = classification_report(y_test, y_pred_mitigated, output_dict=True, zero_division=0)
     mitigated_group_rates = _group_positive_rates(y_pred_mitigated, s_raw_test)
@@ -111,7 +210,7 @@ def adversarial_fairness_pipeline(
     result: dict[str, Any] = {
         "status": "success",
         "constraint": constraint,
-        "epsilon": epsilon,
+        "epsilon": current_eps,
         "dataset_summary": {
             "total_records": len(data),
             "train_records": len(X_train),
@@ -142,6 +241,18 @@ def adversarial_fairness_pipeline(
         },
         "interpretation": _interpret(baseline_di, mitigated_di, delta_accuracy),
     }
+
+    # Attach compromise receipt when relaxation was required
+    if compromise is not None:
+        result["compromise_receipt"] = {
+            "compromised": compromise.compromised,
+            "community_epsilon": compromise.community_epsilon,
+            "converged_epsilon": compromise.converged_epsilon,
+            "relaxation_steps": compromise.relaxation_steps,
+            "total_relaxation": compromise.total_relaxation,
+            "ceiling_hit": compromise.ceiling_hit,
+            "detail": compromise.detail,
+        }
 
     return result
 

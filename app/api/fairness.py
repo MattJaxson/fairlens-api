@@ -345,12 +345,17 @@ async def audit_debias(
     # Attach governance metadata to response
     result["community_governance"] = {
         "source": resolved.source,
-        "epsilon": resolved.epsilon,
+        "epsilon_requested": resolved.epsilon,
+        "epsilon_actual": result.get("epsilon", resolved.epsilon),
         "constraint_type": resolved.constraint_type,
         "ledger_hash": resolved.ledger_hash,
         "priority_groups": resolved.priority_groups,
         "fairness_target": resolved.fairness_target,
     }
+
+    # Surface compromise receipt at top level when convergence required relaxation
+    if "compromise_receipt" in result:
+        result["community_governance"]["convergence_compromised"] = True
 
     await log_usage(session, key_record.id, "/api/v1/fairness/audit/debias", len(df))
     return JSONResponse(content=result)
