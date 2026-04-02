@@ -46,6 +46,10 @@ class FairnessReport(BaseModel):
     text_length: int
     categories_analyzed: list[str]
     timestamp: datetime
+    provenance_receipt: Optional["ProvenanceReceipt"] = Field(
+        default=None,
+        description="CPL receipt proving which community standard governed this analysis",
+    )
 
 
 class GroupOutcome(BaseModel):
@@ -71,6 +75,10 @@ class DatasetFairnessReport(BaseModel):
     protected_columns_analysis: list[ProtectedColumnReport]
     recommendations: list[str]
     timestamp: datetime
+    provenance_receipt: Optional["ProvenanceReceipt"] = Field(
+        default=None,
+        description="CPL receipt proving which community standard governed this analysis",
+    )
 
 
 # ── API Key & Usage Models ──────────────────────────────────────────────────
@@ -167,3 +175,59 @@ class CommunityConfigCreate(BaseModel):
     input_participants: int = Field(default=0, ge=0)
     facilitator: str = Field(default="")
     notes: str = Field(default="")
+
+
+# ── Provenance Ledger Models ───────────────────────────────────────────────
+
+class DemographicSummary(BaseModel):
+    """Aggregated, anonymous demographic snapshot — NO PII."""
+    majority_race: str = Field(..., description="Largest racial/ethnic group, e.g. 'Black'")
+    majority_race_pct: float = Field(..., ge=0, le=100, description="Percentage of majority group")
+    median_age: int = Field(..., ge=0, description="Median age of participants")
+    additional: dict = Field(default_factory=dict, description="Extra aggregated fields (gender_split, etc.)")
+
+
+class ProvenanceLedgerCreate(BaseModel):
+    """Input for creating a CPL entry. Strictly anonymous — no names, IPs, or PII."""
+    council_label: str = Field(..., min_length=1, max_length=128, description="Session identifier, e.g. 'Council 4A'")
+    participant_count: int = Field(..., ge=1, description="Number of session participants")
+    demographic_summary: DemographicSummary
+    consensus_summary: str = Field(
+        ..., min_length=10, max_length=2000,
+        description="Qualitative summary of community consensus — no individual names",
+    )
+    input_protocol: str = Field(default="community_session")
+    community_config_id: int = Field(..., description="ID of the CommunityConfig this session produced")
+
+
+class ProvenanceLedgerResponse(BaseModel):
+    id: int
+    entry_hash: str = Field(description="SHA-256 hash binding session metadata to quantitative output")
+    prev_hash: Optional[str] = Field(description="Hash of predecessor entry (None for genesis)")
+    council_label: str
+    participant_count: int
+    demographic_summary: DemographicSummary
+    consensus_summary: str
+    input_protocol: str
+    fairness_threshold: str
+    priority_groups: list[str]
+    fairness_target: str
+    created_at: datetime
+
+
+class ProvenanceReceipt(BaseModel):
+    """
+    Lightweight receipt embedded in every analysis response.
+    Proves which community standard governed the analysis and lets
+    auditors independently verify the hash chain.
+    """
+    ledger_hash: str = Field(description="SHA-256 hash of the governing CPL entry")
+    prev_hash: Optional[str] = Field(description="Predecessor hash for chain verification")
+    council_label: str
+    participant_count: int
+    demographic_summary: DemographicSummary
+    consensus_summary: str
+    fairness_threshold: float
+    priority_groups: list[str]
+    fairness_target: str
+    governed_at: datetime = Field(description="When the CPL entry was created")

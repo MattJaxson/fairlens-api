@@ -16,6 +16,7 @@ from app.models.schemas import (
 )
 from app.services.bias_detector import TextBiasDetector
 from app.services.dataset_analyzer import DatasetAnalyzer
+from app.services.provenance import get_active_receipt
 
 router = APIRouter(prefix="/api/v1/analyze", tags=["analysis"])
 
@@ -33,9 +34,16 @@ async def analyze_text(
     Analyze text for bias across specified categories.
 
     Returns a fairness report with per-category scores, flagged phrases,
-    and actionable recommendations.
+    and actionable recommendations. If the caller's account has an active
+    community config with a CPL entry, a ``provenance_receipt`` is included
+    proving which community standard governed the analysis.
     """
     report = bias_detector.analyze_text(request.text, request.categories)
+
+    # Attach provenance receipt if the user has a ledger entry
+    receipt = await get_active_receipt(session, key_record.user_id)
+    if receipt is not None:
+        report.provenance_receipt = receipt
 
     # Log usage
     await log_usage(
@@ -68,7 +76,8 @@ async def analyze_dataset(
     Analyze a dataset for fairness across protected attributes.
 
     Computes disparate impact ratio, statistical parity difference,
-    and group-level outcome rates.
+    and group-level outcome rates. Includes ``provenance_receipt`` when
+    the caller has an active CPL entry.
     """
     try:
         report = dataset_analyzer.analyze_dataset(
@@ -78,6 +87,11 @@ async def analyze_dataset(
         )
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    # Attach provenance receipt
+    receipt = await get_active_receipt(session, key_record.user_id)
+    if receipt is not None:
+        report.provenance_receipt = receipt
 
     # Log usage
     await log_usage(

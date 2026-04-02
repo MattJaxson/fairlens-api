@@ -84,6 +84,38 @@ class CommunityConfig(Base):
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
+class ProvenanceLedger(Base):
+    """
+    Cryptographic Provenance Ledger (CPL).
+
+    Append-only hash chain of community fairness decisions. Each entry
+    stores *aggregated, anonymous* session metadata — never PII — and a
+    SHA-256 hash that binds the session to the resulting quantitative
+    threshold. Entries link to their predecessor via ``prev_hash``,
+    forming a tamper-evident chain.
+    """
+    __tablename__ = "provenance_ledger"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    entry_hash = Column(String(64), unique=True, nullable=False, index=True)
+    prev_hash = Column(String(64), nullable=True)  # None for genesis entry
+    community_config_id = Column(Integer, ForeignKey("community_configs.id"), nullable=False)
+
+    # ── Anonymous session demographics (aggregated, NO PII) ──
+    council_label = Column(String(128), nullable=False)          # e.g. "Council 4A"
+    participant_count = Column(Integer, nullable=False)
+    demographic_summary = Column(Text, nullable=False)           # JSON: {"majority_race_pct": 80, "majority_race": "Black", "median_age": 34, ...}
+    consensus_summary = Column(Text, nullable=False)             # Qualitative: "Residents prioritised equitable lending…"
+    input_protocol = Column(String(64), nullable=False)          # community_session | voice_survey | …
+
+    # ── Bound quantitative output ──
+    fairness_threshold = Column(String(32), nullable=False)      # e.g. "0.85"
+    priority_groups_json = Column(Text, nullable=False)          # JSON list: ["Black", "Latinx"]
+    fairness_target = Column(String(128), nullable=False)        # reference group
+
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
 class PageView(Base):
     """Anonymous page view tracking."""
     __tablename__ = "page_views"
