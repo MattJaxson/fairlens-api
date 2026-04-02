@@ -137,10 +137,16 @@
         <div class="title-bar">
             <div class="close-box"></div>
             <div class="title-bar-lines title-bar-lines-left"></div>
-            <span class="title-text">Terminal &mdash; Quick Start</span>
+            <span class="title-text">System Audit Receipt &mdash; v1.0</span>
             <div class="title-bar-lines"></div>
         </div>
-        <div class="code-body"><span class="cm"># Analyze text for bias</span>
+        <div class="code-body"><span class="receipt-header">PROJECT LIBRA AUDIT RECEIPT</span>
+<span class="receipt-sep">────────────────────────────────────────────────────</span>
+<span class="receipt-label">ENDPOINT</span>  <span class="receipt-value">POST /api/v1/analyze/text</span>
+<span class="receipt-label">ISSUED  </span>  <span class="receipt-value">2026-04-02T00:00:00Z</span>
+<span class="receipt-sep">────────────────────────────────────────────────────</span>
+
+<span class="cm"># Analyze text for bias</span>
 <span class="kw">curl</span> -X POST /api/v1/analyze/text \
   -H <span class="str">"X-API-Key: fl_live_your_key"</span> \
   -H <span class="str">"Content-Type: application/json"</span> \
@@ -149,7 +155,9 @@
     "categories": ["gender", "age"]
   }'</span>
 
-<span class="cm"># Response</span>
+<span class="receipt-sep">────────────────────────────────────────────────────</span>
+<span class="receipt-label">RESPONSE</span>
+
 {
   <span class="str">"overall_score"</span>: <span class="num">34.2</span>,
   <span class="str">"bias_scores"</span>: [
@@ -160,7 +168,12 @@
     <span class="str">"Replace 'salesman' with 'salesperson'"</span>,
     <span class="str">"Remove age-specific language"</span>
   ]
-}</div>
+}
+
+<span class="receipt-sep">════════════════════════════════════════════════════</span>
+<span class="receipt-label">CHAIN </span>  <span class="receipt-value">NO ACTIVE COMMUNITY CONFIG</span>
+<span class="receipt-label">STATUS</span>  <span class="receipt-value">UNVERIFIED STANDARD &#8212; EEOC DEFAULT APPLIED</span>
+<span class="receipt-sep">════════════════════════════════════════════════════</span></div>
     </div>
 
     <!-- ═══ Features Window ═══ -->
