@@ -19,6 +19,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import check_usage_limit, log_usage
+from app.core.community_resolver import ResolvedConstraint, resolve_community_constraint
 from app.models.database import APIKey, CommunityConfig, ReportStore, User, get_session
 from app.models.schemas import (
     CommunityConfigCreate,
@@ -306,15 +307,26 @@ async def audit_debias(
     outcome_col: str = Form(...),
     favorable_value: str = Form(...),
     feature_cols: str = Form(..., description="Comma-separated feature columns"),
-    constraint: str = Form(default="demographic_parity"),
+    constraint: str = Form(default=None, description="Override constraint type (default: resolved from community/regulation)"),
     key_record: APIKey = Depends(check_usage_limit),
     session: AsyncSession = Depends(get_session),
+    resolved: ResolvedConstraint = Depends(resolve_community_constraint),
 ) -> JSONResponse:
-    """Adversarial ML debiasing via Fairlearn. Enterprise tier only."""
+    """
+    Adversarial ML debiasing via Fairlearn. Enterprise tier only.
+
+    Community constraint resolution (via X-Community-ID or X-Regulation-Target
+    headers, or the user's active CommunityConfig) dynamically injects the
+    ε bound and constraint type into the Fairlearn model before fitting.
+    """
     user = await session.get(User, key_record.user_id)
     _require_tier(user, "enterprise")
 
     from app.services.adversarial_debiaser import adversarial_fairness_pipeline
+
+    # Use the community-resolved constraint, allow form param override
+    effective_constraint = constraint or resolved.constraint_type
+    effective_epsilon = resolved.epsilon
 
     try:
         df = await _read_csv(file)
@@ -324,10 +336,21 @@ async def audit_debias(
         df, favorable = coerce_favorable(df, outcome_col, favorable_value)
         result = adversarial_fairness_pipeline(
             data=df, feature_cols=parsed_features, outcome_col=outcome_col,
-            sensitive_col=race_col, favorable_value=favorable, constraint=constraint,
+            sensitive_col=race_col, favorable_value=favorable,
+            constraint=effective_constraint, epsilon=effective_epsilon,
         )
     except (ValueError, ImportError) as exc:
         raise HTTPException(status_code=400, detail=str(exc))
+
+    # Attach governance metadata to response
+    result["community_governance"] = {
+        "source": resolved.source,
+        "epsilon": resolved.epsilon,
+        "constraint_type": resolved.constraint_type,
+        "ledger_hash": resolved.ledger_hash,
+        "priority_groups": resolved.priority_groups,
+        "fairness_target": resolved.fairness_target,
+    }
 
     await log_usage(session, key_record.id, "/api/v1/fairness/audit/debias", len(df))
     return JSONResponse(content=result)

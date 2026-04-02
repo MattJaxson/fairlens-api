@@ -26,11 +26,27 @@ def adversarial_fairness_pipeline(
     sensitive_col: str,
     favorable_value: Any,
     constraint: str = "demographic_parity",
+    epsilon: float | None = None,
     test_size: float = 0.3,
     random_state: int = 42,
 ) -> dict:
+    """
+    Adversarial debiasing via Fairlearn ExponentiatedGradient.
+
+    Parameters
+    ----------
+    constraint : str
+        "demographic_parity" or "equalized_odds".
+    epsilon : float | None
+        Community-derived ε bound (from Q2Q / CPL). When None, Fairlearn's
+        unconstrained default is used (difference_bound not set).
+    """
     try:
-        from fairlearn.reductions import ExponentiatedGradient, DemographicParity
+        from fairlearn.reductions import (
+            ExponentiatedGradient,
+            DemographicParity,
+            EqualizedOdds,
+        )
     except ImportError as exc:
         raise ImportError("fairlearn is required for adversarial debiasing.") from exc
 
@@ -66,8 +82,17 @@ def adversarial_fairness_pipeline(
     baseline_group_rates = _group_positive_rates(y_pred_baseline, s_raw_test)
     baseline_di = _disparate_impact_from_rates(baseline_group_rates)
 
+    # ── Dynamic constraint injection ──
+    # Build the Fairlearn constraint with community-derived ε when available.
+    # When ε is None, use the unconstrained default (no difference_bound kwarg).
+    constraint_kwargs: dict = {}
+    if epsilon is not None:
+        constraint_kwargs["difference_bound"] = epsilon
+
     if constraint == "demographic_parity":
-        fairness_constraint = DemographicParity()
+        fairness_constraint = DemographicParity(**constraint_kwargs)
+    elif constraint == "equalized_odds":
+        fairness_constraint = EqualizedOdds(**constraint_kwargs)
     else:
         raise ValueError(f"Unsupported constraint: {constraint}")
 
@@ -82,9 +107,11 @@ def adversarial_fairness_pipeline(
 
     delta_accuracy = mitigated_report.get("accuracy", 0) - baseline_report.get("accuracy", 0)
 
-    return {
+    # Build response with community governance metadata
+    result: dict[str, Any] = {
         "status": "success",
         "constraint": constraint,
+        "epsilon": epsilon,
         "dataset_summary": {
             "total_records": len(data),
             "train_records": len(X_train),
@@ -115,6 +142,8 @@ def adversarial_fairness_pipeline(
         },
         "interpretation": _interpret(baseline_di, mitigated_di, delta_accuracy),
     }
+
+    return result
 
 
 def _group_positive_rates(y_pred: np.ndarray, s: pd.Series) -> dict[str, float]:
