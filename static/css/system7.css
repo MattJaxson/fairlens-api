@@ -126,6 +126,8 @@ body::before {
     font-size: 11px;
     color: rgba(255,255,255,0.55);
     letter-spacing: 0.06em;
+    background: rgba(0,0,0,0.12);
+    border-bottom: 1px solid rgba(0,0,0,0.15);
 }
 .stats-strip .stat-item {
     display: flex;
@@ -1286,12 +1288,20 @@ a.compliance-badge:hover {
 }
 a {
     color: var(--black);
+    text-decoration: none;
+}
+a:hover { color: #7a6590; }
+/* Prose content links — underlined, dark purple */
+.window-body p a,
+.window-body li a,
+.window-body .cdf-text a {
+    color: #5a4870;
     text-decoration: underline;
     text-underline-offset: 2px;
 }
-a:hover { color: #7a6590; }
-.window-body a { color: #5a4870; }
-.window-body a:hover { color: var(--black); }
+.window-body p a:hover,
+.window-body li a:hover,
+.window-body .cdf-text a:hover { color: var(--black); }
 
 /* ── Responsive ────────────────────────────────── */
 @media (max-width: 768px) {
